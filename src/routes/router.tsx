@@ -1,4 +1,4 @@
-import { NavLink, Outlet, createBrowserRouter } from "react-router-dom";
+import { Outlet, createBrowserRouter } from "react-router-dom";
 import { Welcome1 } from "../pages/Welcome1";
 import { Welcome2 } from "../pages/Welcome2";
 import { Welcome3 } from "../pages/Welcome3";

@@ -6,6 +6,5 @@ export const RedirectToWelcome1: React.FC = () => {
   useEffect(() => {
     nav("/welcome/1");
   }, []);
-
   return null;
 };

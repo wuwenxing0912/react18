@@ -1,10 +1,28 @@
 import * as React from "react";
-import { NavLink } from "react-router-dom";
+import styled from "styled-components";
+
+const Div = styled.div`
+  border: 1px solid red;
+  height: 100px;
+  &:hover {
+    background-color: blue;
+  }
+`;
+
+const Div200Px = styled(Div)`
+  height: 200px;
+  &:hover {
+    background-color: green;
+  }
+`;
+
 export const Welcome2: React.FC = () => {
   return (
-    <div style={{ border: "1px solid red" }}>
-      {" "}
-      2 <NavLink to="/welcome/3">下一页</NavLink>{" "}
+    <div>
+      <Div>styled-components 写法 100px</Div>
+      <Div200Px className="test_custom_class">
+        styled-components 写法 200px
+      </Div200Px>
     </div>
   );
 };

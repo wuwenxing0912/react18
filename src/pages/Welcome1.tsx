@@ -1,10 +1,6 @@
 import * as React from "react";
-import { NavLink } from "react-router-dom";
+import style from "./Welcome1.module.scss";
+
 export const Welcome1: React.FC = () => {
-  return (
-    <div style={{ border: "1px solid red" }}>
-      {" "}
-      1 <NavLink to="/welcome/2">下一页</NavLink>{" "}
-    </div>
-  );
+  return <div className={style.wrapper}>下一页 scss写法</div>;
 };

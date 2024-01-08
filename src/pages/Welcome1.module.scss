@@ -1,13 +1,14 @@
 .wrapper {
-  border: 1px solid red;
+
   &:hover {
-    background-color: blue;
+    background-color: red;
   }
-  &:global(.test_no_random) {
-    height: 100px;
+  :global(.frank) {
+    border: 1px solid red;
   }
 }
 
-.wrapper_text_color {
-  color: green;
+.blue {
+  color: blue;
 }
+

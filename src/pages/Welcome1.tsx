@@ -1,20 +1,11 @@
-import * as React from "react";
-import style from "./Welcome1.module.scss";
-import classNames from "classnames";
-
+import c from 'classnames'
+import s from './Welcome1.module.scss'
 export const Welcome1: React.FC = () => {
-  //[style.wrapper,style.wrapper_text_color,"test_no_random",].join(" ")
   return (
-    <div>
-      <div
-        className={classNames(
-          style.wrapper,
-          style.wrapper_text_color,
-          "test_no_random"
-        )}
-      >
-        下一页 scss写法
+    <div className={c(s.wrapper, s.blue)}>
+      <div className='frank'>
+      山竹记账
       </div>
     </div>
-  );
-};
+  )
+}

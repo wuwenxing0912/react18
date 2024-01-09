@@ -1,5 +1,5 @@
 {
-  "name": "react-mangosteen-1",
+  "name": "react18",
   "type": "module",
   "version": "0.0.0",
   "private": true,
@@ -7,7 +7,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "dev": "vite",
-    "build": "tsc && vite build --base=/react-mangosteen-1-preview/",
+    "build": "tsc && vite build --base=/react18/",
     "preview": "vite preview"
   },
   "dependencies": {

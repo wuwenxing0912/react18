@@ -1,3 +1,5 @@
 export const Home: React.FC = () => {
-  return <div>Home </div>;
-};
+  return <div text-6xl>
+    Home
+  </div>
+}

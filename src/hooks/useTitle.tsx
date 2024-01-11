@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect } from 'react'
 
 export const useTitle = (title?: string) => {
-  if (title === undefined || title === null) return;
   useEffect(() => {
-    document.title = title;
-  });
-};
+    if (title === undefined || title === null) { return }
+    document.title = title
+  }, [])
+}

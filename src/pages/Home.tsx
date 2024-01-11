@@ -2,7 +2,12 @@ import p from "../assets/images/pig.svg";
 import add from "../assets/icons/add.svg";
 import useSWR from "swr";
 import { ajax } from "../lib/ajax";
-export const Home: React.FC = () => {
+import { useTitle } from "../hooks/useTitle";
+interface Props {
+  title?: string;
+}
+export const Home: React.FC<Props> = (props) => {
+  useTitle(props.title);
   const { data: meData, error: meError } = useSWR("/api/v1/me", (path) => {
     return ajax.get(path);
   });

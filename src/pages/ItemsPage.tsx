@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { AddItemFloatButton } from "../components/AddItemFloatButton";
-import { TimeRangePicker } from "../components/TimeRangePicker";
+import { TimeRangePicker, selected } from "../components/TimeRangePicker";
 import { Topnav } from "../components/Topnav";
 import { ItemsList } from "./ItemsPage/ItemsList";
 import { ItemsSummary } from "./ItemsPage/ItemsSummary";
+import { useState } from "react";
 
 const Div = styled.div`
   background: linear-gradient(
@@ -14,11 +15,12 @@ const Div = styled.div`
 `;
 
 export const ItemsPage: React.FC = () => {
+  const [timeRange, setTimeRange] = useState<selected>("thisMonth");
   return (
     <div>
       <Div>
         <Topnav />
-        <TimeRangePicker />
+        <TimeRangePicker selected={timeRange} onSelected={setTimeRange} />
       </Div>
       <ItemsSummary />
       <ItemsList />

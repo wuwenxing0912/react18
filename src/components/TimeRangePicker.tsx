@@ -15,7 +15,7 @@ const timeRanges: { key: selected; text: string }[] = [
 export const TimeRangePicker: React.FC<Props> = ({ selected, onSelected }) => {
   return (
     <div>
-      <ol flex items-center pt-16px text-white text-16px children-px-24px>
+      <ol flex items-center pt-16px text-white text-16px children-px-16px>
         {timeRanges.map((tr) => (
           <li
             key={tr.key}

@@ -3,13 +3,12 @@ import styled from "styled-components";
 import { AddItemFloatButton } from "../components/AddItemFloatButton";
 import type { TimeRange } from "../components/TimeRangePicker";
 import { TimeRangePicker } from "../components/TimeRangePicker";
-
 import { ItemsList } from "./ItemsPage/ItemsList";
 import { ItemsSummary } from "./ItemsPage/ItemsSummary";
 import React from "react";
 import { TopMenu } from "../components/TopMenu";
-import { menuContext } from "../contexts/menuContext";
 import { TopNav } from "../components/TopNav";
+import { useMenuStore } from "../stores/useMenuStore";
 
 const Div = styled.div`
   background: linear-gradient(
@@ -43,19 +42,17 @@ export const ItemsPage: React.FC = () => {
       updated_at: "2021-01-01T00:00:00.000Z",
     },
   ]);
-  const [visible, setVisible] = useState(false);
+  const { visible } = useMenuStore();
   return (
-    <menuContext.Provider value={{ setVisible }}>
-      <div>
-        <Div>
-          <TopNav />
-          <TimeRangePicker selected={timeRange} onSelected={setTimeRange} />
-        </Div>
-        <ItemsSummary />
-        <ItemsList items={items} />
-        <AddItemFloatButton />
-        {visible ? <TopMenu /> : null}
-      </div>
-    </menuContext.Provider>
+    <div>
+      <Div>
+        <TopNav />
+        <TimeRangePicker selected={timeRange} onSelected={setTimeRange} />
+      </Div>
+      <ItemsSummary />
+      <ItemsList items={items} />
+      <AddItemFloatButton />
+      {visible ? <TopMenu /> : null}
+    </div>
   );
 };

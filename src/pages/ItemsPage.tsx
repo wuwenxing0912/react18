@@ -3,11 +3,13 @@ import styled from "styled-components";
 import { AddItemFloatButton } from "../components/AddItemFloatButton";
 import type { TimeRange } from "../components/TimeRangePicker";
 import { TimeRangePicker } from "../components/TimeRangePicker";
-import { TopNav } from "../components/TopNav";
+
 import { ItemsList } from "./ItemsPage/ItemsList";
 import { ItemsSummary } from "./ItemsPage/ItemsSummary";
 import React from "react";
 import { TopMenu } from "../components/TopMenu";
+import { menuContext } from "../contexts/menuContext";
+import { TopNav } from "../components/TopNav";
 
 const Div = styled.div`
   background: linear-gradient(
@@ -16,9 +18,7 @@ const Div = styled.div`
     rgba(92, 51, 190, 1) 100%
   );
 `;
-export const menuContext = React.createContext({
-  setVisible: (visible: boolean) => {},
-});
+
 export const ItemsPage: React.FC = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>("thisMonth");
   const [items] = useState<Item[]>([

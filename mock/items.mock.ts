@@ -22,8 +22,15 @@ const createItemList = (
   { perPage = 10, page = 1, count = 100 },
   attrs?: Partial<Item>
 ): Resources<Item> => {
+  const sendCount = (page - 1) * perPage;
+  const left = count - sendCount;
   return {
-    resources: Array.from({ length: perPage }).map(() => createItem(attrs)),
+    resources:
+      left > 0
+        ? Array.from({ length: Math.min(left, perPage) }).map(() =>
+            createItem(attrs)
+          )
+        : [],
     pager: {
       page,
       per_page: perPage,
@@ -40,7 +47,7 @@ export const itemsMock: MockMethod = {
     return createItemList({
       perPage: 10,
       page: parseInt(query.page),
-      count: 100,
+      count: 30,
     });
   },
 };

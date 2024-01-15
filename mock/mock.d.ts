@@ -1,3 +1,3 @@
 type ResponseParams = {
-  query: Record<string, string>;
-};
+  query: Record<string, string>
+}

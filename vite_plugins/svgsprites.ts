@@ -1,64 +1,81 @@
-import path from 'path'
-import fs from 'fs'
-import store from 'svgstore'
-import { optimize } from 'svgo'
-import type { Plugin, ViteDevServer } from 'vite'
+import path from "path";
+import fs from "fs";
+import store from "svgstore";
+import { optimize } from "svgo";
+import type { Plugin, ViteDevServer } from "vite";
 
 interface Options {
-  id?: string
-  inputFolder?: string
-  inline?: boolean
+  id?: string;
+  inputFolder?: string;
+  inline?: boolean;
+  noHandler?: string[];
 }
 export const svgsprites = (options: Options = {}): Plugin => {
-  const virtualModuleId = `virtual:svgsprites${options.id ? `-${options.id}` : ''}`
-  const resolvedVirtualModuleId = `\0${virtualModuleId}`
-  const { inputFolder = 'src/assets/icons', inline = false } = options
+  const virtualModuleId = `virtual:svgsprites${
+    options.id ? `-${options.id}` : ""
+  }`;
+  const resolvedVirtualModuleId = `\0${virtualModuleId}`;
+  const { inputFolder = "src/assets/icons", inline = false } = options;
 
   const generateCode = () => {
-    const sprites = store(options)
-    const iconsDir = path.resolve(inputFolder)
+    const sprites = store(options);
+    const iconsDir = path.resolve(inputFolder);
     for (const file of fs.readdirSync(iconsDir)) {
-      if (!file.endsWith('.svg')) { continue }
-      const filepath = path.join(iconsDir, file)
-      const svgId = path.parse(file).name
-      const code = fs.readFileSync(filepath, { encoding: 'utf-8' })
-      sprites.add(svgId, code)
+      if (!file.endsWith(".svg")) {
+        continue;
+      }
+      const filepath = path.join(iconsDir, file);
+      const svgId = path.parse(file).name;
+      const code = fs.readFileSync(filepath, { encoding: "utf-8" });
+      const symbol = options.noHandler?.includes(svgId)
+        ? code
+        : optimize(code, {
+            plugins: [
+              "cleanupAttrs",
+              "removeDoctype",
+              "removeComments",
+              "removeTitle",
+              "removeDesc",
+              "removeEmptyAttrs",
+              { name: "removeAttrs", params: { attrs: "(data-name|fill)" } },
+            ],
+          }).data;
+
+      sprites.add(svgId, symbol);
     }
-    const { data: code } = optimize(sprites.toString({ inline }), {
-      plugins: [
-        'cleanupAttrs', 'removeDoctype', 'removeComments', 'removeTitle', 'removeDesc', 'removeEmptyAttrs',
-        { name: 'removeAttrs', params: { attrs: '(data-name|fill)' } },
-      ],
-    })
-    return code
-  }
+    return sprites.toString({ inline });
+  };
   const handleFileCreationOrUpdate = (file: string, server: ViteDevServer) => {
-    if (!file.includes(inputFolder)) { return }
-    const code = generateCode()
-    server.ws.send('svgsprites:change', { code })
-    const mod = server.moduleGraph.getModuleById(resolvedVirtualModuleId)
-    if (!mod) { return }
-    server.moduleGraph.invalidateModule(mod, undefined, Date.now())
-  }
+    if (!file.includes(inputFolder)) {
+      return;
+    }
+    const code = generateCode();
+    server.ws.send("svgsprites:change", { code });
+    const mod = server.moduleGraph.getModuleById(resolvedVirtualModuleId);
+    if (!mod) {
+      return;
+    }
+    server.moduleGraph.invalidateModule(mod, undefined, Date.now());
+  };
 
   return {
-    name: 'svgsprites',
+    name: "svgsprites",
     configureServer(server) {
-      server.watcher.on('add', (file) => {
-        handleFileCreationOrUpdate(file, server)
-      })
-      server.watcher.on('change', (file) => {
-        handleFileCreationOrUpdate(file, server)
-      })
+      server.watcher.on("add", (file) => {
+        handleFileCreationOrUpdate(file, server);
+      });
+      server.watcher.on("change", (file) => {
+        handleFileCreationOrUpdate(file, server);
+      });
     },
     resolveId(id: string) {
       if (id === virtualModuleId) {
-        return resolvedVirtualModuleId
+        return resolvedVirtualModuleId;
       }
     },
     load(id: string) {
       if (id === resolvedVirtualModuleId) {
-        const code = generateCode()
+        const code = generateCode();
         return `!function(){
   const div = document.createElement('div')
   div.innerHTML = \`${code}\`
@@ -92,8 +109,8 @@ export const svgsprites = (options: Options = {}): Plugin => {
       updateSvg(svg)
     })
   }
-}()`
+}()`;
       }
     },
-  }
-}
+  };
+};

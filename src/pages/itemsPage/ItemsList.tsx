@@ -27,6 +27,11 @@ export const ItemsList: React.FC = () => {
   if (!data) {
     return <div>无数据</div>;
   } else {
+    const last = data[data.length - 1];
+    // const
+    const hasMore =
+      (last.pager.page - 1) * last.pager.per_page + last.resources.length <
+      last.pager.count;
     return (
       <>
         <ol>
@@ -86,11 +91,17 @@ export const ItemsList: React.FC = () => {
             )
             .flat()}
         </ol>
-        <div p-16px>
-          <button j-btn onClick={() => loadMore()}>
-            加载更多
-          </button>
-        </div>
+        {hasMore ? (
+          <div p-16px text-center>
+            <button j-btn onClick={() => loadMore()}>
+              加载更多
+            </button>
+          </div>
+        ) : (
+          <div p-16px text-center>
+            没有更多数据了
+          </div>
+        )}
       </>
     );
   }

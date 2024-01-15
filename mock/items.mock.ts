@@ -42,7 +42,7 @@ const createItemList = (
 export const itemsMock: MockMethod = {
   url: "/api/v1/items",
   method: "get",
-  statusCode: 200,
+  statusCode: 500,
   response: ({ query }: ResponseParams): Resources<Item> => {
     return createItemList({
       perPage: 10,

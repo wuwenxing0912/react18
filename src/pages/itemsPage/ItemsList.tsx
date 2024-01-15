@@ -1,5 +1,6 @@
 import useSWRInfinite from "swr/infinite";
 import { ajax } from "../../lib/ajax";
+import styled from "styled-components";
 
 // interface Props {
 //   items: Item[]
@@ -17,6 +18,11 @@ const getKey = (pageIndex: number, prev: Resources<Item>) => {
   return `/api/v1/items?page=${pageIndex + 1}`;
 };
 
+const Div = styled.div`
+  padding: 16px;
+  text-align: center;
+`;
+
 export const ItemsList: React.FC = () => {
   const { data, error, size, setSize } = useSWRInfinite(
     getKey,
@@ -25,7 +31,11 @@ export const ItemsList: React.FC = () => {
   const loadMore = () => setSize(size + 1);
   console.log(data, error);
   if (!data) {
-    return <div>无数据</div>;
+    return (
+      <div>
+        {error ? <Div>数据加载失败，请刷新页面</Div> : <Div>无数据</Div>}
+      </div>
+    );
   } else {
     const last = data[data.length - 1];
     // const
@@ -91,16 +101,15 @@ export const ItemsList: React.FC = () => {
             )
             .flat()}
         </ol>
+        {error && <Div>数据加载失败，请刷新页面</Div>}
         {hasMore ? (
-          <div p-16px text-center>
+          <Div>
             <button j-btn onClick={() => loadMore()}>
               加载更多
             </button>
-          </div>
+          </Div>
         ) : (
-          <div p-16px text-center>
-            没有更多数据了
-          </div>
+          <Div>没有更多数据了</Div>
         )}
       </>
     );

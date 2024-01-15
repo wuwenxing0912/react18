@@ -30,10 +30,14 @@ export const ItemsList: React.FC = () => {
   );
   const loadMore = () => setSize(size + 1);
   console.log(data, error);
+  const isLoadingInitialData = !data && !error;
+  const isLoadingMore = data?.[size - 1] === undefined && !error;
+  const isLoading = isLoadingInitialData || isLoadingMore;
   if (!data) {
     return (
       <div>
-        {error ? <Div>数据加载失败，请刷新页面</Div> : <Div>无数据</Div>}
+        {error && <Div>数据加载失败，请刷新页面</Div>}
+        {isLoading && <Div>数据加载中...</Div>}
       </div>
     );
   } else {
@@ -102,14 +106,16 @@ export const ItemsList: React.FC = () => {
             .flat()}
         </ol>
         {error && <Div>数据加载失败，请刷新页面</Div>}
-        {hasMore ? (
+        {!hasMore ? (
+          <Div>没有更多数据了</Div>
+        ) : isLoading ? (
+          <Div>数据加载中...</Div>
+        ) : (
           <Div>
-            <button j-btn onClick={() => loadMore()}>
+            <button j-btn onClick={loadMore}>
               加载更多
             </button>
           </Div>
-        ) : (
-          <Div>没有更多数据了</Div>
         )}
       </>
     );

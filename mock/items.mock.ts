@@ -42,12 +42,13 @@ const createItemList = (
 export const itemsMock: MockMethod = {
   url: "/api/v1/items",
   method: "get",
-  statusCode: 500,
+  statusCode: 200,
+  timeout: 5000,
   response: ({ query }: ResponseParams): Resources<Item> => {
     return createItemList({
       perPage: 10,
       page: parseInt(query.page),
-      count: 30,
+      count: 36,
     });
   },
 };

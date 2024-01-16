@@ -1,7 +1,7 @@
 import { animated, useTransition } from '@react-spring/web'
 import type { ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation, useNavigate, useOutlet } from 'react-router-dom'
+import { useLocation, useNavigate, useOutlet } from 'react-router-dom'
 import logo from '../assets/images/logo.svg'
 import { useSwipe } from '../hooks/useSwipe'
 import { useLocalStore } from '../stores/useLocalStore'
@@ -45,6 +45,7 @@ export const WelcomeLayout: React.FC = () => {
   const { setHasReadWelcomes } = useLocalStore()
   const onSkip = () => {
     setHasReadWelcomes(true)
+    nav('/home')
   }
   return (
     <div className="bg-#5f34bf" h-screen flex flex-col items-stretch pb-16px>
@@ -52,7 +53,7 @@ export const WelcomeLayout: React.FC = () => {
         <img src={logo} w-64px h-69px />
         <h1 text="#D4D4EE" text-32px>山竹记账</h1>
       </header>
-      <Link to='/home' fixed right-16px top-16px text-24px text-white>跳过</Link>
+      <span fixed right-16px top-16px text-24px text-white onClick={onSkip}>跳过</span>
       <main shrink-1 grow-1 relative ref={main} >
         {transitions((style, pathname) =>
           <animated.div key={pathname} style={{ ...style, ...extraStyle }} w="100%" h="100%" p-16px flex>

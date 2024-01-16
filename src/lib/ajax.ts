@@ -8,7 +8,9 @@ export const ajax = {
   get: <T>(path: string) => {
     return axios.get<T>(path)
   },
-  post: () => { },
+  post: (path: string, data: JSONValue) => {
+    return axios.post(path, data)
+  },
   patch: () => { },
   delete: () => { },
 }

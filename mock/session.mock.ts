@@ -5,7 +5,7 @@ export const sessionMock: MockMethod = {
   method: 'post',
   response: (): { jwt: string } => {
     return {
-      jwt: 'xxxx'
+      jwt: 'xxxxxx'
     }
   },
 }

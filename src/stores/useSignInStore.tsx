@@ -12,6 +12,7 @@ interface SignIn {
   setData: (data: Partial<Data>) => void
   setError: (error: Partial<FormError<Data>>) => void
 }
+
 export const useSignInStore = create<SignIn>((set, get) => (
   {
     data: {
@@ -23,14 +24,13 @@ export const useSignInStore = create<SignIn>((set, get) => (
       code: []
     },
     setData: (data: Partial<Data>) => {
-      set((state) => {
-        return {
-          data: {
-            ...state.data,
-            ...data
-          }
+      set(state => ({
+        ...state,
+        data: {
+          ...state.data,
+          ...data
         }
-      })
+      }))
     },
     setError: (error: Partial<FormError<Data>>) => {
       set(state => ({

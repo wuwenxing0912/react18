@@ -1,8 +1,15 @@
-import { TopNav } from "../components/TopNav";
-import { Gradient } from "../components/Gradient";
-import { Icon } from "../components/Icon";
+import type { FormEventHandler } from 'react'
+import { TopNav } from '../components/TopNav'
+import { Gradient } from '../components/Gradient'
+import { Icon } from '../components/Icon'
+import { useSignInStore } from '../stores/useSignInStore'
 
 export const SignInPage: React.FC = () => {
+  const { data, setData } = useSignInStore()
+  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault()
+    setData(data)
+  }
   return (
     <div>
       <Gradient>
@@ -14,19 +21,22 @@ export const SignInPage: React.FC = () => {
           山竹记账
         </h1>
       </div>
-      <form j-form>
+      <form j-form onSubmit={onSubmit}>
         <div>
           <span j-form-label>邮箱地址</span>
           <input
             j-input-text
             type="text"
             placeholder="请输入邮箱，然后点击发送验证码"
+            value={data.email}
+            onChange={e => setData({ email: e.target.value })}
           />
         </div>
         <div>
           <span j-form-label>验证码</span>
           <div flex gap-x-16px>
-            <input j-input-text type="text" placeholder="六位数字" />
+            <input j-input-text type="text" placeholder="六位数字" value={data.code}
+              onChange={e => setData({ code: e.target.value })} />
             <button j-btn>发送验证码</button>
           </div>
         </div>
@@ -37,5 +47,5 @@ export const SignInPage: React.FC = () => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}

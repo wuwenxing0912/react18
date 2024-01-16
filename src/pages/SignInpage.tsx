@@ -18,6 +18,7 @@ export const SignInPage: React.FC = () => {
       { key: 'code', type: 'required', message: '请输入验证码' },
       { key: 'code', type: 'length', min: 6, max: 6, message: '验证码必须是6个字符' },
     ])
+    console.log(error)
     setError(error)
     if (!hasError(error)) {
       await ajax.post('/api/v1/session', data)

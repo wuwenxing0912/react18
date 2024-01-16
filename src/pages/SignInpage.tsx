@@ -18,7 +18,6 @@ export const SignInPage: React.FC = () => {
       { key: 'code', type: 'required', message: '请输入验证码' },
       { key: 'code', type: 'length', min: 6, max: 6, message: '验证码必须是6个字符' },
     ])
-    console.log(error)
     setError(error)
     if (!hasError(error)) {
       await ajax.post('/api/v1/session', data)
@@ -45,9 +44,10 @@ export const SignInPage: React.FC = () => {
         <div>
           <span j-form-label>验证码 {error.code?.[0] && <span text-red>{error.code[0]}</span>}</span>
           <div flex gap-x-16px>
-            <input j-input-text type="text" placeholder='六位数字' max-w='[calc(40%-8px)]' shrink-1
+            <input shrink-1 j-input-text type="text" placeholder='六位数字'
+              max-w="[calc(40%-8px)]"
               value={data.code} onChange={e => setData({ code: e.target.value })} />
-            <button j-btn max-w='[calc(60%-8px)]' shrink-0>发送验证码</button>
+            <button max-w="[calc(60%-8px)]" shrink-0 j-btn>发送验证码</button>
           </div>
         </div>
         <div mt-100px>

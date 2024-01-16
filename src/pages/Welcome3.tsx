@@ -9,8 +9,8 @@ export const Welcome3: React.FC = () => {
         数据可视化 <br />
         收支一目了然
       </h2>
-      <div text-32px color="#6035BF" font-bold mt-64px>
-        <Link to='/welcome/4'>下一页</Link>
+      <div mt-64px>
+        <Link text-32px color="#6035BF" font-bold to="/welcome/4">下一页</Link>
       </div>
     </div>
   )

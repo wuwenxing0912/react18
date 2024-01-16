@@ -8,8 +8,8 @@ export const Welcome1: React.FC = () => {
         会挣钱 <br />
         还要会省钱
       </h2>
-      <div text-32px color="#6035BF" font-bold mt-64px>
-        <Link to='/welcome/2'>下一页</Link>
+      <div mt-64px>
+        <Link text-32px color="#6035BF" font-bold to="/welcome/2">下一页</Link>
       </div>
     </div>
   )

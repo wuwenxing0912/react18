@@ -33,7 +33,6 @@ export const WelcomeLayout: React.FC = () => {
   })
   const main = useRef<HTMLElement>(null)
   const { direction } = useSwipe(main)
-  console.log(direction)
   const nav = useNavigate()
   useEffect(() => {
     if (direction === 'left') {
@@ -45,15 +44,15 @@ export const WelcomeLayout: React.FC = () => {
   const { setHasReadWelcomes } = useLocalStore()
   const onSkip = () => {
     setHasReadWelcomes(true)
-    nav('/home')
+    nav('/welcome/xxx')
   }
   return (
     <div className="bg-#5f34bf" h-screen flex flex-col items-stretch pb-16px>
+      <span fixed text-white top-16px right-16px text-32px onClick={onSkip}>跳过</span>
       <header shrink-0 text-center pt-64px>
         <img src={logo} w-64px h-69px />
         <h1 text="#D4D4EE" text-32px>山竹记账</h1>
       </header>
-      <span fixed right-16px top-16px text-24px text-white onClick={onSkip}>跳过</span>
       <main shrink-1 grow-1 relative ref={main} >
         {transitions((style, pathname) =>
           <animated.div key={pathname} style={{ ...style, ...extraStyle }} w="100%" h="100%" p-16px flex>
@@ -63,10 +62,6 @@ export const WelcomeLayout: React.FC = () => {
           </animated.div>
         )}
       </main>
-      {/* <footer shrink-0 text-center text-24px text-white grid grid-cols-3 grid-rows-1>
-        <Link style={{ gridArea: '1 / 2 / 2 / 3' }} to={linkMap[location.pathname]}>下一页</Link>
-        <Link style={{ gridArea: '1 / 3 / 2 / 4' }} to="/home" onClick={onSkip}>跳过</Link>
-      </footer> */}
     </div>
   )
 }

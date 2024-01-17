@@ -3,28 +3,24 @@ import { useState } from 'react'
 type Props = {
   className?: string
 }
-
 export const DateAndAmount: React.FC<Props> = (props) => {
-  const [inputValue, setInputValue] = useState('')
   const { className } = props
+  const [x, setX] = useState('')
   return (
-    <div className={className}>
-      <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
-      DateAndAmount<br />
+    <div b-1 b-blue className={className}>
+      <input value={x} onChange={e => setX(e.target.value)} />
+      DateAndAmount <br />
+      DateAndAmount <br />
+      DateAndAmount <br />
+      DateAndAmount <br />
+      DateAndAmount <br />
+      DateAndAmount <br />
+      DateAndAmount <br />
+      DateAndAmount <br />
+      DateAndAmount <br />
+      DateAndAmount <br />
+      DateAndAmount <br />
+
     </div>
   )
 }

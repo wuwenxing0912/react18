@@ -1,29 +1,38 @@
 import type { ReactNode } from 'react'
-import classnames from 'classnames'
+import React from 'react'
+import cs from 'classnames'
 import s from './Tabs.module.scss'
-
-interface Props<T> {
-  tabs: { key: T; text: string; element?: ReactNode }[]
-  value: string
+type Props<T> = {
+  tabItems: {
+    key: T
+    text: string
+    element?: ReactNode
+  }[]
+  value: T
   onChange: (key: T) => void
   className?: string
-  prefixClass?: string
+  classPrefix?: string
 }
 
 export const Tabs = <T extends string>(props: Props<T>) => {
-  const { tabs, value, onChange, className, prefixClass } = props
+  const { tabItems, value, onChange, className, classPrefix } = props
   return (
-    <div className={className} flex flex-col>
+    <div className={cs(className, classPrefix)} flex flex-col>
       <ol flex text-white children-px-24px children-py-12px bg="[rgb(143,76,215)]"
-        className={prefixClass ? `${prefixClass}-menu` : ''} grow-0 shrink-0>
-        {tabs.map(tab => <li key={tab.key}
-          className={classnames(tab.key === value ? s.selected : '', prefixClass ? `${prefixClass}-menu-item` : '')}
-          onClick={() => onChange(tab.key)}>
-          {tab.text}
-        </li>)}
+        grow-0 shrink-0 className={classPrefix ? `${classPrefix}-menu` : ''}>
+        {tabItems.map(item =>
+          <li key={item.key} className={
+            cs(
+              item.key === value ? s.selected : '',
+              classPrefix ? `${classPrefix}-menu-item` : ''
+            )
+          }
+            onClick={() => onChange(item.key)}>
+            {item.text}
+          </li>)}
       </ol>
-      <div className={prefixClass ? `${prefixClass}-pane` : ''} grow-1 shrink-1 overflow-auto>
-        {tabs.filter(tab => tab.key === value)[0].element}
+      <div grow-1 shrink-1 overflow-auto className={classPrefix ? `${classPrefix}-pane` : ''}>
+        {tabItems.filter(item => item.key === value)[0].element}
       </div>
     </div>
   )

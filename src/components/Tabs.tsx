@@ -6,7 +6,7 @@ interface Props<T> {
   tabs: { key: T; text: string; element?: ReactNode }[]
   value: string
   onChange: (key: T) => void
-  className: string
+  className?: string
   prefixClass?: string
 }
 

@@ -11,7 +11,7 @@ export const ItemsNewPage: React.FC = () => {
     <div>
       <Gradient>
         <TopNav title="记一笔" icon={<Icon name="back" />} />
-        <Tabs tabs={tabsItem} value={tab} onChange={setTab} />
+        <Tabs tabs={tabsItem} value={tab} onChange={setTab} className='children-text-center children-flex-1' />
       </Gradient>
     </div>
   )

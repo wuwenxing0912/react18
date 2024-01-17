@@ -9,7 +9,7 @@ interface Props<T> {
 export const Tabs = <T extends string>(props: Props<T>) => {
   const { tabs, value, onChange } = props
   return (
-    <ol flex text-white children-px-24px children-py-12px cursor-pointer>
+    <ol flex text-white children-px-24px children-py-12px>
       {tabs.map(tab => <li key={tab.key} className={tab.key === value ? s.selected : ''}
         onClick={() => onChange(tab.key)}>
         {tab.text}

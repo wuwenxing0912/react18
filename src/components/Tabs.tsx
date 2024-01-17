@@ -13,16 +13,16 @@ interface Props<T> {
 export const Tabs = <T extends string>(props: Props<T>) => {
   const { tabs, value, onChange, className, prefixClass } = props
   return (
-    <div className={className}>
+    <div className={className} flex flex-col>
       <ol flex text-white children-px-24px children-py-12px bg="[rgb(143,76,215)]"
-        className={prefixClass ? `${prefixClass}-menu` : ''}>
+        className={prefixClass ? `${prefixClass}-menu` : ''} grow-0 shrink-0>
         {tabs.map(tab => <li key={tab.key}
           className={classnames(tab.key === value ? s.selected : '', prefixClass ? `${prefixClass}-menu-item` : '')}
           onClick={() => onChange(tab.key)}>
           {tab.text}
         </li>)}
       </ol>
-      <div className={prefixClass ? `${prefixClass}-pane` : ''}>
+      <div className={prefixClass ? `${prefixClass}-pane` : ''} grow-1 shrink-1 overflow-auto>
         {tabs.filter(tab => tab.key === value)[0].element}
       </div>
     </div>

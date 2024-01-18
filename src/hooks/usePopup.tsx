@@ -6,7 +6,7 @@ import { rootDiv } from '../main'
 
 export const usePopup = (initVisible = false, children: ReactNode) => {
   const [visible, setVisible] = useState(initVisible)
-  const popup = ReactDOM.createPortal(<Popup visible={visible} onClickMask={() => setVisible(false)}>
+  const popup = ReactDOM.createPortal(<Popup visible={visible} onClickMask={() => setVisible(false)} >
     {children}
   </Popup>, rootDiv)
   return {
@@ -14,7 +14,7 @@ export const usePopup = (initVisible = false, children: ReactNode) => {
     show() {
       setVisible(true)
     },
-    hidden() {
+    hide() {
       setVisible(false)
     },
     toggle() {

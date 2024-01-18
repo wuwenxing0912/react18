@@ -1,8 +1,10 @@
 import * as React from 'react'
 declare module 'react' {
   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    absolute?: boolean
     flex?: boolean
     relative?: boolean
+    top?: string
     text?: string
     grid?: boolean
     before?: string
@@ -17,8 +19,6 @@ declare module 'react' {
     z?: string
     block?: boolean
     'focus:shadow'?: boolean
-    absolute?: boolean
-    top?: string
   }
   interface SVGProps<T> extends SVGAttributes<T>, ClassAttributes<T> {
     w?: string

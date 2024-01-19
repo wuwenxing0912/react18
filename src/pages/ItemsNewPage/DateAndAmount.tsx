@@ -9,37 +9,34 @@ type Props = {
 }
 export const DateAndAmount: React.FC<Props> = (props) => {
   const [date, setDate] = useState(new Date())
+  const [output, _setOutput] = useState('0')
+  // 拦截器
+  const setOutput = (str: string) => {
+    const dotIndex = str.indexOf('.')
+    if (dotIndex >= 0 && str.length - dotIndex > 3) { return }
+    if (str.length > 16) { return }
+    _setOutput(str)
+  }
   const { className } = props
   const { toggle, popup, hide } = usePopup(false, <Datepicker
     onConfirm={d => { setDate(d); hide() }}
     onCancel={() => hide()} />)
-  const [output, _setOutput] = useState('0')
-  const setOutput = (str: string) => {
-    const dotIndex = str.indexOf('.')
-    if (dotIndex >= 0 && str.length - dotIndex > 3)
-      return
-    if (str.length > 16)
-      return
-    _setOutput(str)
-  }
-  const append = (str: string) => {
-    switch (str) {
-      case ('0'):
-        if (output !== '0')
-          setOutput(output + str)
+  const append = (char: string) => {
+    switch (char) {
+      case '0':
+        if (output !== '0') { setOutput(output + char) }
         break
-      case ('.'):
-        if (!output.includes('.'))
-          setOutput(output + str)
+      case '.':
+        if (!output.includes('.')) { setOutput(output + char) }
         break
       default:
-        if (output === '0') {
-          setOutput(str)
-        } else {
-          setOutput(output + str)
-        }
+        if (output === '0') { setOutput(char) }
+        else { setOutput(output + char) }
         break
     }
+  }
+  const clear = () => {
+    setOutput('0')
   }
   return (
     <>
@@ -52,10 +49,8 @@ export const DateAndAmount: React.FC<Props> = (props) => {
           </span>
           <code grow-1 shrink-1 text-right color="#53A867">{output}</code>
         </div>
-        <div py-1px grid
-          grid-cols="[repeat(4,1fr)]" grid-rows="[repeat(4,56px)]" bg="#ddd" gap-1px
-          children-b-none
-          children-bg-white>
+        <div py-1px grid children-b-none children-bg-white
+          grid-cols="[repeat(4,1fr)]" grid-rows="[repeat(4,56px)]" bg="#ddd" gap-1px >
           <button row-start-1 col-start-1 row-end-2 col-end-2 onClick={() => append('1')}>1</button>
           <button row-start-1 col-start-2 row-end-2 col-end-3 onClick={() => append('2')}>2</button>
           <button row-start-1 col-start-3 row-end-2 col-end-4 onClick={() => append('3')}>3</button>
@@ -67,8 +62,9 @@ export const DateAndAmount: React.FC<Props> = (props) => {
           <button row-start-3 col-start-3 row-end-4 col-end-4 onClick={() => append('9')}>9</button>
           <button row-start-4 col-start-1 row-end-5 col-end-3 onClick={() => append('0')}>0</button>
           <button row-start-4 col-start-3 row-end-5 col-end-4 onClick={() => append('.')}>.</button>
-          <button row-start-1 col-start-4 row-end-3 col-end-5 onClick={() => setOutput('0')}>清空</button>
-          <button row-start-3 col-start-4 row-end-5 col-end-5 bg="#5C33BE" text-white onClick={() => { }}>提交</button>
+          <button row-start-1 col-start-4 row-end-3 col-end-5 onClick={clear}>清空</button>
+          <button row-start-3 col-start-4 row-end-5 col-end-5
+            bg="#5C33BE" text-white onClick={() => { }}>提交</button>
         </div>
       </div>
     </>

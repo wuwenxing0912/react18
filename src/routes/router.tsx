@@ -9,7 +9,7 @@ import { Welcome1 } from '../pages/Welcome1'
 import { Welcome2 } from '../pages/Welcome2'
 import { Welcome3 } from '../pages/Welcome3'
 import { Welcome4 } from '../pages/Welcome4'
-import { TagsNewpage } from '../pages/TagsNewPage'
+import { TagsNewPage } from '../pages/TagsNewPage'
 
 export const router = createBrowserRouter([
   { path: '/', element: <Root />, },
@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
   },
   { path: '/items', element: <ItemsPage /> },
   { path: '/items/new', element: <ItemsNewPage /> },
-  { path: '/tags/new', element: <TagsNewpage /> },
+  { path: '/tags/new', element: <TagsNewPage /> },
   { path: '/sign_in', element: <SignInPage /> },
   { path: '/chart', element: <div>图表</div> },
   { path: '/export', element: <div>敬请期待</div> },

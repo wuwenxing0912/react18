@@ -8,14 +8,12 @@ import { useCreateTagStore } from '../../stores/useCreateTagStore'
 type Props = {
   type: 'create' | 'edit'
 }
-
 export const TagForm: React.FC<Props> = (props) => {
   const { type } = props
   const { data, error, setData, setError } = useCreateTagStore()
   const [searchParams] = useSearchParams()
   useEffect(() => {
-    if (type !== 'create')
-      return
+    if (type !== 'create') { return }
     const kind = searchParams.get('kind')
     if (!kind) {
       throw new Error('kind 必填')
@@ -32,8 +30,9 @@ export const TagForm: React.FC<Props> = (props) => {
     if (!id) { throw new Error('id 必填') }
     // 发起 AJAX 请求
     // 然后 setData
-  }, [searchParams])
-  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  }, [])
+
+  const onSubmit: FormEventHandler = (e) => {
     e.preventDefault()
     const newError = validate(data, [
       { key: 'kind', type: 'required', message: '标签类型必填' },
@@ -48,10 +47,12 @@ export const TagForm: React.FC<Props> = (props) => {
   }
   return (
     <form onSubmit={onSubmit} p-16px p-t-32px flex flex-col gap-y-8px>
-      <Input label='标签名' error={error.name?.[0]} value={data.name} onChange={name => setData({ name })} />
+      <Input label='标签名' error={error.name?.[0]} value={data.name}
+        onChange={name => setData({ name })} />
       <Input type='emoji' label={<span>图标 <span text-24px>{data.sign}</span></span>}
-        value={data.sign} onChange={sign => setData({ sign })} error={error.sign?.[0]} />
-      <p text-center pb-24px>记账时长按标签，即可进行编辑</p>
+        value={data.sign} onChange={sign => setData({ sign })}
+        error={error.sign?.[0]} />
+      <p text-center p-b-24px>记账时长按标签，即可进行编辑</p>
       <div>
         <button j-btn>确定</button>
       </div>

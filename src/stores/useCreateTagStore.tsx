@@ -14,13 +14,13 @@ export const useCreateTagStore = create<CreateTag>((set, get) => (
   {
     data: {
       kind: 'expenses',
-      name: '',
-      sign: ''
+      sign: '',
+      name: ''
     },
     error: {
       kind: [],
-      name: [],
-      sign: []
+      sign: [],
+      name: []
     },
     setData: (data: Partial<Data>) => {
       set(state => ({

@@ -37,24 +37,12 @@ export const SignInPage: React.FC = () => {
         <h1 text-32px text="#7878FF" font-bold>山竹记账</h1>
       </div>
       <form j-form onSubmit={onSubmit}>
-        {/* <div>
-          <span j-form-label>邮箱地址 {error.email?.[0] && <span text-red>{error.email[0]}</span>}</span>
-          <input j-input-text type="text" placeholder='请输入邮箱，然后点击发送验证码'
-            value={data.email} onChange={e => setData({ email: e.target.value })} />
-        </div> */}
-        <Input type="text" placeholder='请输入邮箱，然后点击发送验证码' label='邮箱地址' error={error.email?.[0]}
-          value={data.email} onChange={(email) => setData({ email })} />
-        {/* <div>
-          <span j-form-label>验证码 {error.code?.[0] && <span text-red>{error.code[0]}</span>}</span>
-          <div flex gap-x-16px>
-            <input shrink-1 j-input-text type="text" placeholder='六位数字'
-              max-w="[calc(40%-8px)]"
-              value={data.code} onChange={e => setData({ code: e.target.value })} />
-            <button max-w="[calc(60%-8px)]" shrink-0 j-btn>发送验证码</button>
-          </div>
-        </div> */}
-        <Input type='sms_code' placeholder='六位数字' value={data.code} label='验证码'
-          onChange={(code) => setData({ code })} error={error.code?.[0]} />
+        <Input label='邮箱地址' placeholder='请输入邮箱，然后点击发送验证码'
+          value={data.email} onChange={email => setData({ email })}
+          error={error.email?.[0]} />
+        <Input label='验证码' type="sms_code" placeholder='六位数字' value={data.code}
+          onChange={value => setData({ code: value })}
+          error={error.code?.[0]} />
         <div mt-100px>
           <button j-btn type="submit" >登录</button>
         </div>

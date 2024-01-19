@@ -44,7 +44,7 @@ export const SignInPage: React.FC = () => {
         </div> */}
         <Input type="text" placeholder='请输入邮箱，然后点击发送验证码' label='邮箱地址' error={error.email?.[0]}
           value={data.email} onChange={(value) => setData({ email: value })} />
-        <div>
+        {/* <div>
           <span j-form-label>验证码 {error.code?.[0] && <span text-red>{error.code[0]}</span>}</span>
           <div flex gap-x-16px>
             <input shrink-1 j-input-text type="text" placeholder='六位数字'
@@ -52,7 +52,9 @@ export const SignInPage: React.FC = () => {
               value={data.code} onChange={e => setData({ code: e.target.value })} />
             <button max-w="[calc(60%-8px)]" shrink-0 j-btn>发送验证码</button>
           </div>
-        </div>
+        </div> */}
+        <Input type='sms_code' placeholder='六位数字' value={data.code} label='验证码'
+          onChange={(value) => setData({ code: value })} error={error.code?.[0]} />
         <div mt-100px>
           <button j-btn type="submit" >登录</button>
         </div>

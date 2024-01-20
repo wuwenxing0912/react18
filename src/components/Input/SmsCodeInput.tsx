@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type Props = {
   value?: string
@@ -6,33 +6,46 @@ type Props = {
   onChange?: (value: string) => void
   request?: () => Promise<unknown>
 }
+const maxCount = 30
 export const SmsCodeInput: React.FC<Props> = (props) => {
   const { value, placeholder, onChange, request } = props
-  const [second, setSecond] = useState(6)
-  const [started, setStarted] = useState(false)
+  const [started, setStarted] = useState<Date>()
+  const [count, setCount] = useState(maxCount)
+  const timer = useRef<number>()
   const onClick = async () => {
     if (!request) { return }
     await request()
-    setStarted(true)
+    setStarted(new Date())
+  }
+  const clearTimer = () => {
+    if (timer.current) {
+      window.clearInterval(timer.current)
+      timer.current = undefined
+    }
   }
   useEffect(() => {
-    if (!started) { return }
-    if (second === -1) {
-      setStarted(false)
-      setSecond(6)
+    if (!started) {
+      clearTimer()
       return
     }
-    const timer = setTimeout(() => {
-      setSecond(second - 1)
+    timer.current = window.setInterval(() => {
+      const t = new Date()
+      const seconds = Math.round((t.getTime() - started.getTime()) / 1000)
+      if (maxCount - seconds < 0) {
+        setStarted(undefined)
+      }
+      setCount(maxCount - seconds)
     }, 1000)
-    return () => clearTimeout(timer)
-  }, [started, second])
+    return clearTimer
+  }, [started])
   return (
     <div flex gap-x-16px>
       <input shrink-1 j-input-text type="text" placeholder={placeholder} max-w="[calc(40%-8px)]"
         value={value} onChange={e => onChange?.(e.target.value)} />
       {started
-        ? <button max-w="[calc(60%-8px)]" shrink-0 j-btn type='button'>{second}</button>
+        ? <button type="button" max-w="[calc(60%-8px)]" shrink-0 j-btn disabled text-gray>
+          {count}秒后可重发
+        </button>
         : <button max-w="[calc(60%-8px)]" shrink-0 j-btn type='button' onClick={onClick}>发送验证码</button>}
     </div>
   )

@@ -34,9 +34,10 @@ export const SignInPage: React.FC = () => {
     ])
     setError(newError)
     if (!hasError(newError)) {
-      const response = await axios.post('http://121.196.236.94:8080/api/v1/validation_codes', {
-        email: data.email
-      })
+      const response = await Promise.resolve()
+      // axios.post('http://121.196.236.94:8080/api/v1/validation_codes', {
+      //   email: data.email
+      // })
       return response
     }
   }

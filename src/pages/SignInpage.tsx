@@ -31,7 +31,6 @@ export const SignInPage: React.FC = () => {
       const response = await ajax.post<{ jwt: string }>('http://121.196.236.94:8080/api/v1/session', data)
         .catch(onSubmitError)
       const jwt = response.data.jwt
-      console.log('jwt', jwt)
       localStorage.setItem('jwt', jwt)
       nav('/home')
     }
@@ -41,11 +40,7 @@ export const SignInPage: React.FC = () => {
       { key: 'email', type: 'pattern', regex: /^.+@.+$/, message: '邮箱地址格式不正确' }
     ])
     setError(newError)
-    if (hasError(newError)) {
-      console.log('有错')
-    } else {
-      console.log('没错')
-      // 请求
+    if (!hasError(newError)) {
       const response = await axios.post('http://121.196.236.94:8080/api/v1/validation_codes', {
         email: data.email
       })
@@ -62,7 +57,7 @@ export const SignInPage: React.FC = () => {
         <h1 text-32px text="#7878FF" font-bold>山竹记账</h1>
       </div>
       <form j-form onSubmit={onSubmit}>
-        <Input label='邮箱地址' placeholder='请输入邮箱，然后点击发送验证码'
+        <Input label='邮箱地址' placeholder='请输入邮箱，然后点击发送验证码' type='text'
           value={data.email} onChange={email => setData({ email })}
           error={error.email?.[0]} />
         <Input label='验证码' type="sms_code" placeholder='六位数字' value={data.code}

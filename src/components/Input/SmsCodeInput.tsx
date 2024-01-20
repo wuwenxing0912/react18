@@ -6,7 +6,7 @@ type Props = {
   onChange?: (value: string) => void
   request?: () => Promise<unknown>
 }
-const maxCount = 30
+const maxCount = 60
 export const SmsCodeInput: React.FC<Props> = (props) => {
   const { value, placeholder, onChange, request } = props
   const [started, setStarted] = useState<Date>()
@@ -29,15 +29,14 @@ export const SmsCodeInput: React.FC<Props> = (props) => {
       return
     }
     timer.current = window.setInterval(() => {
-      const t = new Date()
-      const seconds = Math.round((t.getTime() - started.getTime()) / 1000)
-      if (maxCount - seconds < 0) {
-        setStarted(undefined)
-      }
-      setCount(maxCount - seconds)
+      const seconds = Math.round((new Date().getTime() - started.getTime()) / 1000)
+      const count = maxCount - seconds
+      if (count < 0) { setStarted(undefined) }
+      setCount(count)
     }, 1000)
     return clearTimer
   }, [started])
+
   return (
     <div flex gap-x-16px>
       <input shrink-1 j-input-text type="text" placeholder={placeholder} max-w="[calc(40%-8px)]"
@@ -46,7 +45,10 @@ export const SmsCodeInput: React.FC<Props> = (props) => {
         ? <button type="button" max-w="[calc(60%-8px)]" shrink-0 j-btn disabled text-gray>
           {count}秒后可重发
         </button>
-        : <button max-w="[calc(60%-8px)]" shrink-0 j-btn type='button' onClick={onClick}>发送验证码</button>}
+        : <button type="button" max-w="[calc(60%-8px)]" shrink-0 j-btn onClick={onClick}>
+          发送验证码
+        </button>
+      }
     </div>
   )
 }

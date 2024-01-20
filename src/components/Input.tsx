@@ -33,7 +33,8 @@ export const Input: React.FC<Props> = (props) => {
           }
         </select>
       case 'sms_code':
-        return <SmsCodeInput value={value} placeholder={placeholder} onChange={onChange} request={props.request} />
+        return <SmsCodeInput value={value} onChange={onChange} placeholder={placeholder}
+          request={props.request} />
       default:
         return null
     }

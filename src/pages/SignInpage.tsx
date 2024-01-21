@@ -12,8 +12,8 @@ import { Input } from '../components/Input'
 
 export const SignInPage: React.FC = () => {
   const { data, error, setData, setError } = useSignInStore()
-  const { post } = useAjax({ showLoading: true })
   const nav = useNavigate()
+  const { post } = useAjax({ showLoading: true })
   const onSubmitError = (err: AxiosError<{ errors: FormError<typeof data> }>) => {
     setError(err.response?.data?.errors ?? {})
     throw error
@@ -28,10 +28,14 @@ export const SignInPage: React.FC = () => {
     ])
     setError(newError)
     if (!hasError(newError)) {
+      // 发送请求
       const response = await post<{ jwt: string }>('http://121.196.236.94:8080/api/v1/session', data)
         .catch(onSubmitError)
+      // 获取 JWT
       const jwt = response.data.jwt
+      // JWT 放入 LS
       localStorage.setItem('jwt', jwt)
+      // 回到首页
       nav('/home')
     }
   }
@@ -40,15 +44,11 @@ export const SignInPage: React.FC = () => {
       { key: 'email', type: 'pattern', regex: /^.+@.+$/, message: '邮箱地址格式不正确' }
     ])
     setError(newError)
-    if (hasError(newError)) {
-      throw new Error('请求出错')
-    }
-    if (!hasError(newError)) {
-      const response = await post('http://121.196.236.94:8080/api/v1/validation_codes', {
-        email: data.email
-      })
-      return response
-    }
+    if (hasError(newError)) { throw new Error('表单出错') }
+    const response = await post('http://121.196.236.94:8080/api/v1/validation_codes', {
+      email: data.email
+    })
+    return response
   }
   return (
     <div>
@@ -60,7 +60,7 @@ export const SignInPage: React.FC = () => {
         <h1 text-32px text="#7878FF" font-bold>山竹记账</h1>
       </div>
       <form j-form onSubmit={onSubmit}>
-        <Input label='邮箱地址' placeholder='请输入邮箱，然后点击发送验证码' type='text'
+        <Input label='邮箱地址' placeholder='请输入邮箱，然后点击发送验证码'
           value={data.email} onChange={email => setData({ email })}
           error={error.email?.[0]} />
         <Input label='验证码' type="sms_code" placeholder='六位数字' value={data.code}

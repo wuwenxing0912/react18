@@ -19,9 +19,9 @@ export const DateAndAmount: React.FC<Props> = (props) => {
   }
   const { className } = props
   const { toggle, popup, hide } = usePopup({
-    initVisible: false,
-    children: <Datepicker onConfirm={d => { setDate(d); hide() }}onCancel={() => hide()} />,
-    position: 'bottom'
+    children: <Datepicker
+      onConfirm={d => { setDate(d); hide() }}
+      onCancel={() => hide()} />
   })
   const append = (char: string) => {
     switch (char) {

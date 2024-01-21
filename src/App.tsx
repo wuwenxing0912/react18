@@ -1,7 +1,7 @@
 import { RouterProvider } from 'react-router-dom'
 import vhCheck from 'vh-check'
 import styled from 'styled-components'
-import { createContext } from 'react'
+import { useEffect } from 'react'
 import { router } from './routes/router'
 import './global.scss'
 import 'virtual:uno.css'
@@ -9,24 +9,23 @@ import './app.scss'
 import 'virtual:svgsprites'
 import { Icon } from './components/Icon'
 import { usePopup } from './hooks/usePopup'
+import { useLoadingStore } from './stores/useLoadingStore'
 vhCheck()
 
-export const LoadingContext = createContext({
-  show: () => {},
-  hide: () => {}
-})
-
 export const App: React.FC = () => {
+  const { visible } = useLoadingStore()
   const { show, hide, popup } = usePopup({
     children: <div p-16px><SpinLoading className='h-32px w-32px' name='loading'/></div>,
     position: 'center'
   })
-
+  useEffect(() => {
+    visible ? show() : hide()
+  }, [visible])
   return (
-    <LoadingContext.Provider value={{ hide, show }}>
+    <div>
       {popup}
       <RouterProvider router={router} />
-    </LoadingContext.Provider>
+    </div>
   )
 }
 

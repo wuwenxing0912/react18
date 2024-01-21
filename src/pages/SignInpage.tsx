@@ -1,17 +1,14 @@
 import type { FormEventHandler } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { AxiosError } from 'axios'
-import axios from 'axios'
-import styled from 'styled-components'
 import { Gradient } from '../components/Gradient'
 import { Icon } from '../components/Icon'
 import { TopNav } from '../components/TopNav'
-import { ajax } from '../lib/ajax'
+import { ajax, useAjax } from '../lib/ajax'
 import type { FormError } from '../lib/validate'
 import { hasError, validate } from '../lib/validate'
 import { useSignInStore } from '../stores/useSignInStore'
 import { Input } from '../components/Input'
-import { usePopup } from '../hooks/usePopup'
 
 export const SignInPage: React.FC = () => {
   const { data, error, setData, setError } = useSignInStore()
@@ -37,18 +34,7 @@ export const SignInPage: React.FC = () => {
       nav('/home')
     }
   }
-  const SpinLoading = styled(Icon)`
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  animation: spin 1.25s linear infinite;
-`
-  const { show, hide, popup } = usePopup({ children: <div p-16px><SpinLoading className='h-32px w-32px' name='loading'/></div>, position: 'center' })
+  const { post } = useAjax({ showLoading: true })
   const sendSmsCode = async () => {
     const newError = validate({ email: data.email }, [
       { key: 'email', type: 'pattern', regex: /^.+@.+$/, message: '邮箱地址格式不正确' }
@@ -58,16 +44,14 @@ export const SignInPage: React.FC = () => {
       throw new Error('请求出错')
     }
     if (!hasError(newError)) {
-      show()
-      const response = await axios.post('http://121.196.236.94:8080/api/v1/validation_codes', {
+      const response = await post('http://121.196.236.94:8080/api/v1/validation_codes', {
         email: data.email
-      }).finally(() => hide())
+      })
       return response
     }
   }
   return (
     <div>
-      {popup}
       <Gradient>
         <TopNav title="登录" icon={<Icon name="back" />} />
       </Gradient>

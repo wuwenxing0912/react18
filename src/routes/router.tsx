@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { Outlet, createBrowserRouter } from 'react-router-dom'
 import type { AxiosError } from 'axios'
 import axios from 'axios'
 import { preload } from 'swr'
@@ -32,37 +32,45 @@ export const router = createBrowserRouter([
       { path: '4', element: <Welcome4 /> },
     ]
   },
-  {
-  path: '/items',
-  element: <ItemsPage />,
-  errorElement: <ItemsPageError/>,
-  loader: async () => {
-      return preload('/api/v1/items?page=1', async (path) => {
-        const res = await axios.get<Resources<Item>>(path).catch((error: AxiosError) => {
-          if (error.response?.status === 401) {
-            throw new UnauthorizedError()
-          }
-          throw error
-        })
-        if (res.data.resources.length) {
-          return res.data
-        } else {
-          throw new NoDataError()
-        }
-      })
-  }
-  },
-  {
-    path: '/items/new',
-    element: <ItemsNewPage />,
-    errorElement: <ErrorPage/>,
-    loader: () => preload('/api/v1/me', path => axios.get<Resources<User>>(path).then(res => res.data, () => { throw new UnauthorizedError() }))
-   },
-  { path: '/tags/new', element: <TagsNewPage /> },
-  { path: '/tags/:id', element: <TagsEditPage /> },
   { path: '/sign_in', element: <SignInPage /> },
-  { path: '/statistics', element: <StatisticsPage /> },
-  { path: '/export', element: <div>敬请期待</div> },
-  { path: '/tags', element: <div>标签</div> },
-  { path: '/noty', element: <div>敬请期待</div> },
+  {
+    path: '/',
+    element: <Outlet/>,
+    errorElement: <ErrorPage/>,
+    loader: () => preload('/api/v1/me', path => axios.get<Resources<User>>(path).then(res => res.data, () => { throw new UnauthorizedError() })),
+    children: [
+      {
+        path: '/items',
+        element: <ItemsPage />,
+        errorElement: <ItemsPageError/>,
+        loader: async () => {
+            return preload('/api/v1/items?page=1', async (path) => {
+              const res = await axios.get<Resources<Item>>(path).catch((error: AxiosError) => {
+                if (error.response?.status === 401) {
+                  throw new UnauthorizedError()
+                }
+                throw error
+              })
+              if (res.data.resources.length) {
+                return res.data
+              } else {
+                throw new NoDataError()
+              }
+            })
+        }
+        },
+        {
+          path: '/items/new',
+          element: <ItemsNewPage />,
+          errorElement: <ErrorPage/>,
+          loader: () => preload('/api/v1/me', path => axios.get<Resources<User>>(path).then(res => res.data, () => { throw new UnauthorizedError() }))
+         },
+        { path: '/tags/new', element: <TagsNewPage /> },
+        { path: '/tags/:id', element: <TagsEditPage /> },
+        { path: '/statistics', element: <StatisticsPage /> },
+        { path: '/export', element: <div>敬请期待</div> },
+        { path: '/tags', element: <div>标签</div> },
+        { path: '/noty', element: <div>敬请期待</div> },
+    ]
+  },
 ])

@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import type { AxiosError } from 'axios'
 import axios from 'axios'
+import { preload } from 'swr'
 import { Root } from '../components/Root'
 import { WelcomeLayout } from '../layouts/WelcomeLayout'
 import { Home } from '../pages/Home'
@@ -35,17 +36,19 @@ export const router = createBrowserRouter([
   element: <ItemsPage />,
   errorElement: <ItemsPageError/>,
   loader: async () => {
-      const res = await axios.get<Resources<Item>>('/api/v1/items?page=1').catch((error: AxiosError) => {
-        if (error.response?.status === 401) {
-          throw new UnauthorizedError()
+      return preload('/api/v1/items?page=1', async (path) => {
+        const res = await axios.get<Resources<Item>>(path).catch((error: AxiosError) => {
+          if (error.response?.status === 401) {
+            throw new UnauthorizedError()
+          }
+          throw error
+        })
+        if (res.data.resources.length) {
+          return res.data
+        } else {
+          throw new NoDataError()
         }
-        throw error
       })
-      if (res.data.resources.length) {
-        return res.data
-      } else {
-        throw new NoDataError()
-      }
   }
   },
   { path: '/items/new', element: <ItemsNewPage /> },

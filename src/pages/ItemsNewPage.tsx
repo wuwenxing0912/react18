@@ -4,11 +4,13 @@ import { Gradient } from '../components/Gradient'
 import { Icon } from '../components/Icon'
 import { Tabs } from '../components/Tabs'
 import { TopNav } from '../components/TopNav'
+import { useCreateItemStore } from '../stores/useCreateItemStore'
 import s from './ItemsNewPage.module.scss'
 import { DateAndAmount } from './ItemsNewPage/DateAndAmount'
 import { Tags } from './ItemsNewPage/Tags'
 
 export const ItemsNewPage: React.FC = () => {
+  const { data, error, setData, setError } = useCreateItemStore()
   const tabItems: { key: Item['kind']; text: string; element?: ReactNode }[]
     = [
       { key: 'expenses', text: '支出', element: <Tags kind="expenses" /> },

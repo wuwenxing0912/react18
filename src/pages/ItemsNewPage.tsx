@@ -16,7 +16,6 @@ export const ItemsNewPage: React.FC = () => {
       { key: 'expenses', text: '支出', element: <Tags kind="expenses" /> },
       { key: 'income', text: '收入', element: <Tags kind="income" /> }
     ]
-  const [tabItem, setTabItem] = useState<Item['kind']>('expenses')
   return (
     <div className={s.wrapper} h-screen flex flex-col>
       <Gradient className="grow-0 shrink-0">
@@ -24,8 +23,9 @@ export const ItemsNewPage: React.FC = () => {
       </Gradient>
       <Tabs tabItems={tabItems} className="text-center grow-1 shrink-1 overflow-hidden"
         classPrefix='itemsNewPage'
-        value={tabItem}
-        onChange={(tabItem) => { setTabItem(tabItem) }} />
+        value={data.kind!}
+        onChange={(tabItem) => { setData({ kind: tabItem }) }} />
+        <div text-32px>{JSON.stringify(data)}</div>
       <DateAndAmount className="grow-0 shrink-0" />
     </div>
   )

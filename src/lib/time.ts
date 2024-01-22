@@ -26,7 +26,7 @@ export class Time {
   }
   /**
    * 格式化输出
-   * @param pattern 目前只支持 yyyy MM dd HH mm ss fff
+   * @param pattern 目前只支持 yyyy MM dd HH mm ss fff，默认值为 'yyyy-MM-dd'
    */
   format(pattern = 'yyyy-MM-dd') {
     return pattern
@@ -136,6 +136,7 @@ export class Time {
   }
   get isoString() {
     // FIXME: 时区获取有问题，只能获取整数时区，如 +08:00；不能获取非整数时区，如 -07:30
+    // 如果你有时间，就解决一下吧
     const timezone = Math.round(-this.#date.getTimezoneOffset() / 60)
     const absolute = Math.abs(timezone)
     const sign = timezone > 0 ? '+' : '-'

@@ -4,10 +4,9 @@ import { usePopup } from '../../hooks/usePopup'
 import { time } from '../../lib/time'
 
 type Props = {
-  value?: string
-  onChange?: (value: string) => void
+  value?: string | Date
+  onChange?: (date: string) => void
 }
-
 export const ItemDate: React.FC<Props> = (props) => {
   const { value, onChange } = props
   const { toggle, popup, hide } = usePopup({
@@ -17,11 +16,11 @@ export const ItemDate: React.FC<Props> = (props) => {
   })
   return (
     <>
-    {popup}
-    <span flex items-center gap-x-8px onClick={toggle}>
+      {popup}
+      <span flex items-center gap-x-8px onClick={toggle}>
         <Icon name="calendar" className="w-24px h-24px grow-0 shrink-0" />
         <span grow-0 shrink-0 color="#999">{time(value).format()}</span>
-    </span></>
-
+      </span>
+    </>
   )
 }

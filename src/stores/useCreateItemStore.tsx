@@ -1,5 +1,6 @@
 import create from 'zustand'
 import type { FormError } from '../lib/validate'
+import { time } from '../lib/time'
 
 interface CreateItem {
   data: Partial<Item>
@@ -12,7 +13,7 @@ export const useCreateItemStore = create<CreateItem>((set, get) => (
   {
     data: {
       kind: 'expenses',
-      happen_at: '',
+      happen_at: time().format(),
       tag_ids: [],
       amount: 0
     },

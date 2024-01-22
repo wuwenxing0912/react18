@@ -6,9 +6,10 @@ type Props = {
   itemDate?: ReactNode
   value?: number
   onChange?: (amount: number) => void
+  onSubmit?: () => void
 }
 export const ItemAmount: React.FC<Props> = (props) => {
-  const { value, onChange } = props
+  const { value, onChange, onSubmit } = props
   const [output, _setOutput] = useState(() => value?.toString() ?? '0')
   // 拦截器
   const setOutput = (str: string) => {
@@ -58,7 +59,7 @@ export const ItemAmount: React.FC<Props> = (props) => {
           <button row-start-4 col-start-3 row-end-5 col-end-4 onClick={() => append('.')}>.</button>
           <button row-start-1 col-start-4 row-end-3 col-end-5 onClick={clear}>清空</button>
           <button row-start-3 col-start-4 row-end-5 col-end-5
-            bg="#5C33BE" text-white onClick={() => { }}>提交</button>
+            bg="#5C33BE" text-white onClick={onSubmit}>提交</button>
         </div>
       </div>
     </>

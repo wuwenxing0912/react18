@@ -13,12 +13,12 @@ import { Input } from '../components/Input'
 export const SignInPage: React.FC = () => {
   const { data, error, setData, setError } = useSignInStore()
   const nav = useNavigate()
-  const [searchParams] = useSearchParams()
   const { post } = useAjax({ showLoading: true })
   const onSubmitError = (err: AxiosError<{ errors: FormError<typeof data> }>) => {
     setError(err.response?.data?.errors ?? {})
     throw error
   }
+  const [search] = useSearchParams()
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
     const newError = validate(data, [
@@ -37,8 +37,8 @@ export const SignInPage: React.FC = () => {
       // JWT 放入 LS
       localStorage.setItem('jwt', jwt)
       // 回到首页
-      const redirect = searchParams.get('redirect') || '/items'
-      nav(redirect)
+      const from = search.get('from') || '/items'
+      nav(from)
     }
   }
   const sendSmsCode = async () => {

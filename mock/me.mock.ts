@@ -6,7 +6,7 @@ export const meMock: MockMethod = {
   statusCode: 401,
   response: () => {
     return {
-      resources: {
+      resource: {
         id: 1
       }
     }

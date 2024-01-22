@@ -1,13 +1,13 @@
 import { Navigate, useLocation, useRouteError } from 'react-router-dom'
-import { UnauthorizedError } from '../error'
+import { ErrorUnauthorized } from '../errors'
 
 export const ErrorPage: React.FC = () => {
-  const locationParams = useLocation()
-  const redirect = encodeURIComponent(locationParams.pathname + locationParams.search)
   const error = useRouteError() as Error
-  if (error instanceof UnauthorizedError) {
-    return <Navigate to={`/sign_in?redirect=${redirect}`}/>
+  const loc = useLocation()
+  const from = encodeURIComponent(`${loc.pathname}${loc.search}`)
+  if (error instanceof ErrorUnauthorized) {
+    return <Navigate to={`/sign_in?from=${from}`} />
   } else {
-    return <div>出错了</div>
+    return <div>未知错误</div>
   }
 }

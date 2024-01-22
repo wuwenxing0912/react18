@@ -1,5 +1,5 @@
 import type { FormEventHandler } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import type { AxiosError } from 'axios'
 import { Gradient } from '../components/Gradient'
 import { Icon } from '../components/Icon'
@@ -13,6 +13,7 @@ import { Input } from '../components/Input'
 export const SignInPage: React.FC = () => {
   const { data, error, setData, setError } = useSignInStore()
   const nav = useNavigate()
+  const [searchParams] = useSearchParams()
   const { post } = useAjax({ showLoading: true })
   const onSubmitError = (err: AxiosError<{ errors: FormError<typeof data> }>) => {
     setError(err.response?.data?.errors ?? {})
@@ -36,7 +37,8 @@ export const SignInPage: React.FC = () => {
       // JWT 放入 LS
       localStorage.setItem('jwt', jwt)
       // 回到首页
-      nav('/items')
+      const redirect = searchParams.get('redirect') || '/items'
+      nav(redirect)
     }
   }
   const sendSmsCode = async () => {

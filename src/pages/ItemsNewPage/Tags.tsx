@@ -82,7 +82,7 @@ export const Tags: React.FC<Props> = (props) => {
         </div>
         {error && <Div>数据加载失败，请刷新页面</Div>}
         {!hasMore
-          ? <Div>没有更多数据了</Div>
+          ? <Div>点击加号图标新增标签</Div>
           : isLoading
             ? <Div>数据加载中...</Div>
             : <Div><button j-btn onClick={onLoadMore}>加载更多</button></Div>}

@@ -1,26 +1,47 @@
 import type { MockMethod } from 'vite-plugin-mock'
+import { faker } from '@faker-js/faker'
+
+let id = 0
+const createId = () => {
+  id += 1
+  return id
+}
+const create = (attrs?: Partial<Tag>): Tag => {
+  return {
+    id: createId(),
+    user_id: 1,
+    name: '美食',
+    sign: faker.internet.emoji(),
+    updated_at: faker.date.past().toISOString(),
+    created_at: faker.date.past().toISOString(),
+    deleted_at: null,
+    kind: 'expenses',
+    ...attrs
+  }
+}
+
+const createList = (n: number, attrs?: Partial<Tag>): Tag[] => {
+  return Array.from({ length: n }).map(() => create(attrs))
+}
+
+const createResponse = ({ count = 10, perPage = 10, page = 1 }, attrs?: Partial<Tag>,): Resources<Tag> => {
+  const sendCount = (page - 1) * perPage
+  const left = count - sendCount
+  return {
+    resources: left > 0 ? createList(Math.min(left, perPage), attrs) : [],
+    pager: {
+      page,
+      per_page: perPage,
+      count
+    }
+  }
+}
 
 export const tagsMock: MockMethod = {
   url: '/api/v1/tags',
   method: 'get',
   statusCode: 200,
-  response: (): Resources<Tag> => {
-    return {
-      resources: Array.from({ length: 20 }).map<Tag>((tag, index) => ({
-        id: index,
-        name: `美食${index}`,
-        kind: 'expenses',
-        sign: '😶',
-        user_id: 1,
-        created_at: '2000-01-01T00:00:00.000Z',
-        updated_at: '2000-01-01T00:00:00.000Z',
-        deleted_at: null
-      })),
-      pager: {
-        page: 1,
-        per_page: 20,
-        count: 20,
-      }
-    }
-  }
+  response: ({ query }: ResponseParams): Resources<Tag> =>
+    createResponse({ count: 101, perPage: 50, page: parseInt(query.page) || 1 })
+  ,
 }

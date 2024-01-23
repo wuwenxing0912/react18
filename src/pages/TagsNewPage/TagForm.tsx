@@ -2,6 +2,7 @@ import type { FormEventHandler } from 'react'
 import { useEffect } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import type { AxiosError } from 'axios'
+import useSWR from 'swr'
 import { Input } from '../../components/Input'
 import type { FormError } from '../../lib/validate'
 import { hasError, validate } from '../../lib/validate'
@@ -17,6 +18,13 @@ export const TagForm: React.FC<Props> = (props) => {
   const [searchParams] = useSearchParams()
   const nav = useNavigate()
   const kind = searchParams.get('kind') || ''
+  const { post, get, patch } = useAjax({ showLoading: true, handleError: true })
+  const params = useParams()
+  const id = params.id
+  const { data: tag } = useSWR(id ? `/api/v1/tags/${id}` : null, async path => {
+    const response = await get<Resource<Tag>>(path)
+    return response.data.resource
+  })
   useEffect(() => {
     if (type !== 'create') { return }
     if (!kind) {
@@ -27,15 +35,11 @@ export const TagForm: React.FC<Props> = (props) => {
     }
     setData({ kind })
   }, [searchParams])
-  const params = useParams()
   useEffect(() => {
-    if (type !== 'edit') { return }
-    const id = params.id
-    if (!id) { throw new Error('id 必填') }
-    // 发起 AJAX 请求
-    // 然后 setData
-  }, [])
-  const { post } = useAjax({ showLoading: true, handleError: true })
+    if (tag) {
+      setData(tag)
+    }
+  }, [tag])
   const handleError = (error: AxiosError<{ errors: FormError<typeof data> }>) => {
     if (error.response) {
       const { status } = error.response
@@ -58,7 +62,10 @@ export const TagForm: React.FC<Props> = (props) => {
     setError(newError)
     if (!hasError(newError)) {
       // 发起 AJAX 请求
-      const res = await post<Resource<Tag>>('/api/v1/tags', data).catch(handleError)
+      const promise = type === 'create'
+        ? post<Resource<Tag>>('/api/v1/tags', data)
+        : patch<Resource<Tag>>(`/api/v1/tags/${id}`, data)
+      const res = await promise.catch(handleError)
       setData(res.data.resource)
       nav(`/items/new?kind=${encodeURIComponent(kind)}`)
     }

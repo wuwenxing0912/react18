@@ -2,14 +2,13 @@ import create from 'zustand'
 
 type List = {
   list: Tag[]
-  setTag: (data: Tag[]) => void
+  setList: (data: Tag[]) => void
 }
-
-export const useTagsStore = create<List>((set, get) => (
-  {
+export const useTagsStore = create<List>((set, get) => {
+  return {
     list: [],
-    setTag: (list: Tag[]) => {
-      set(() => ({ list }))
-    },
+    setList: (list: Tag[]) => {
+      set(state => ({ list }))
+    }
   }
-))
+})

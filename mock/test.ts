@@ -7,5 +7,5 @@ export default [
   meMock,
   itemsMock,
   sessionMock,
-  tagsMock
+  tagsMock,
 ] as MockMethod[]

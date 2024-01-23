@@ -1,5 +1,5 @@
-import type { MockMethod } from 'vite-plugin-mock'
 import { faker } from '@faker-js/faker'
+import type { MockMethod } from 'vite-plugin-mock'
 
 let id = 0
 const createId = () => {
@@ -9,12 +9,12 @@ const createId = () => {
 const create = (attrs?: Partial<Tag>): Tag => {
   return {
     id: createId(),
-    user_id: 1,
-    name: '美食',
+    name: '标签',
     sign: faker.internet.emoji(),
-    updated_at: faker.date.past().toISOString(),
-    created_at: faker.date.past().toISOString(),
+    user_id: 1,
     deleted_at: null,
+    created_at: faker.date.past().toISOString(),
+    updated_at: faker.date.past().toISOString(),
     kind: 'expenses',
     ...attrs
   }
@@ -41,7 +41,7 @@ export const tagsMock: MockMethod = {
   url: '/api/v1/tags',
   method: 'get',
   statusCode: 200,
-  response: ({ query }: ResponseParams): Resources<Tag> =>
-    createResponse({ count: 101, perPage: 50, page: parseInt(query.page) || 1 })
-  ,
+  response: ({ query }: ResponseParams): Resources<Tag> => {
+    return createResponse({ count: 54, perPage: 50, page: parseInt(query.page) || 1 })
+  }
 }

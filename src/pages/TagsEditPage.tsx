@@ -1,22 +1,21 @@
 import { useNavigate, useParams } from 'react-router-dom'
+import { BackIcon } from '../components/BackIcon'
 import { Gradient } from '../components/Gradient'
 import { TopNav } from '../components/TopNav'
 import { useAjax } from '../lib/ajax'
-import { BackIcon } from '../components/BackIcon'
 import { TagForm } from './TagsNewPage/TagForm'
 
 export const TagsEditPage: React.FC = () => {
-  const { del } = useAjax({ showLoading: true, handleError: true })
-  const { id } = useParams()
-  const nav = useNavigate()
-  const confirm = (func: () => void) => () => {
-    const result = window.confirm('确定要删除该标签吗？')
-    if (!result) { return }
-    func()
+  const comfirmable = (fn: () => void) => () => {
+    const result = window.confirm('确定要删除吗？')
+    if (result) { fn() }
   }
-  const onDelete = confirm(async () => {
-    if (!id) { return }
-    await del(`/api/v1/tags/${id}`).catch(() => { window.alert('删除失败'); throw new Error('删除失败') })
+  const { id } = useParams()
+  const { destroy } = useAjax({ showLoading: true, handleError: true })
+  const nav = useNavigate()
+  const onDelete = comfirmable(async () => {
+    if (!id) { throw new Error('id 不能为空') }
+    await destroy(`/api/v1/tags/${id}`).catch((error) => { window.alert('删除失败'); throw error })
     window.alert('删除成功')
     nav('/items/new')
   })

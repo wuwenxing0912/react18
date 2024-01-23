@@ -30,7 +30,7 @@ export const useAjax = (options?: Options) => {
     },
     403: () => {
       window.alert('没有权限')
-    },
+    }
   }
   const showLoading = options?.showLoading || false
   const handleError = options?.handleError ?? true
@@ -48,7 +48,10 @@ export const useAjax = (options?: Options) => {
   }
   const ajax = {
     get: <T>(path: string, config?: AxiosRequestConfig<any>) => {
-      return axios.get<T>(path, config).catch(onError)
+      if (showLoading) { setVisible(true) }
+      return axios.get<T>(path, config).catch(onError).finally(() => {
+        if (showLoading) { setVisible(false) }
+      })
     },
     post: <T>(path: string, data: JSONValue) => {
       if (showLoading) { setVisible(true) }
@@ -62,7 +65,7 @@ export const useAjax = (options?: Options) => {
         if (showLoading) { setVisible(false) }
       })
     },
-    del: <T>(path: string) => {
+    destroy: <T>(path: string) => {
       if (showLoading) { setVisible(true) }
       return axios.delete<T>(path).catch(onError).finally(() => {
         if (showLoading) { setVisible(false) }

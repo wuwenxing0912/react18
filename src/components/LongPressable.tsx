@@ -2,41 +2,42 @@ import type { ReactNode, TouchEvent } from 'react'
 import { useRef } from 'react'
 
 type Props = {
-  children?: ReactNode
-  onEnd?: () => void
+  children: ReactNode
   className?: string
+  onEnd?: () => void
 }
-
 export const LongPressable: React.FC<Props> = (props) => {
-  const { children, onEnd } = props
-  const timer = useRef<number>()
-  const position = useRef<{ x?: number; y?: number }>({ x: undefined, y: undefined })
-  const handleTouchStart = (e: TouchEvent) => {
-    timer.current = window.setTimeout(() => {
+  const { children, className, onEnd } = props
+  const touchTimer = useRef<number>()
+  const touchPosition = useRef<{ x?: number; y?: number }>({ x: undefined, y: undefined })
+  const onTouchStart = (e: TouchEvent) => {
+    touchTimer.current = window.setTimeout(() => {
       onEnd?.()
-    }, 800)
+    }, 500)
     const { clientX: x, clientY: y } = e.touches[0]
-    position.current = { x, y }
+    touchPosition.current = { x, y }
   }
-  const handleTouchMove = (e: TouchEvent) => {
+  const onTouchMove = (e: TouchEvent) => {
     const { clientX: newX, clientY: newY } = e.touches[0]
-    if (position.current.x === undefined || position.current.y === undefined) { return }
-    const distance = Math.sqrt((newX - position.current.x) ** 2 + (newY - position.current.y) ** 2)
+    const { x, y } = touchPosition.current
+    if (x === undefined || y === undefined) { return }
+    const distance = Math.sqrt((newX - x) ** 2 + (newY - y) ** 2)
     if (distance > 10) {
-      window.clearTimeout(timer.current)
-      timer.current = undefined
+      window.clearTimeout(touchTimer.current)
+      touchTimer.current = undefined
     }
   }
-  const handleTouchEnd = (e: TouchEvent) => {
-    if (timer.current) {
-      window.clearTimeout(timer.current)
-      timer.current = undefined
+  const onTouchEnd = (e: TouchEvent) => {
+    if (touchTimer.current) {
+      window.clearTimeout(touchTimer.current)
+      touchTimer.current = undefined
     }
   }
   return (
-    <div onTouchStart={(e) => handleTouchStart(e)}
-      onTouchMove={(e) => handleTouchMove(e)}
-      onTouchEnd={(e) => handleTouchEnd(e)}>
+    <div className={className}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}>
       {children}
     </div>
   )

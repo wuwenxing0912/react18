@@ -1,11 +1,9 @@
-import type { TouchEvent } from 'react'
-import { useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import useSWRInfinite from 'swr/infinite'
 import { Icon } from '../../components/Icon'
-import { useAjax } from '../../lib/ajax'
 import { LongPressable } from '../../components/LongPressable'
+import { useAjax } from '../../lib/ajax'
 
 type Props = {
   kind: Item['kind']
@@ -40,10 +38,6 @@ export const Tags: React.FC<Props> = (props) => {
     setSize(size + 1)
   }
   const nav = useNavigate()
-  const onEnd = (id: Tag['id']) => {
-    nav(`/tags/${id}`)
-  }
-
   if (!data) {
     return <div>空</div>
   } else {
@@ -64,9 +58,9 @@ export const Tags: React.FC<Props> = (props) => {
           {
             data.map(({ resources }, index) => {
               return resources.map((tag, index) =>
-                <li key={index} onClick={() => { props.onChange?.([tag.id]) }}>
-                  <LongPressable className='w-48px flex justify-center items-center flex-col gap-y-8px'
-                    onEnd={() => onEnd(tag.id)}>
+                <li key={index} onClick={() => { props.onChange?.([tag.id]) }} >
+                  <LongPressable className="w-48px flex justify-center items-center flex-col gap-y-8px"
+                    onEnd={() => { nav(`/tags/${tag.id}`) }}>
                     {props.value?.includes(tag.id)
                       ? <span block w-48px h-48px rounded="24px" bg="#EFEFEF"
                         flex justify-center items-center text-24px b-1 b="#8F4CD7">{tag.sign}</span>
@@ -90,3 +84,4 @@ export const Tags: React.FC<Props> = (props) => {
     )
   }
 }
+

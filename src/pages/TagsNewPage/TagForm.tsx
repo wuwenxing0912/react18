@@ -1,13 +1,13 @@
+import type { AxiosError } from 'axios'
 import type { FormEventHandler } from 'react'
 import { useEffect } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import type { AxiosError } from 'axios'
 import useSWR from 'swr'
 import { Input } from '../../components/Input'
+import { useAjax } from '../../lib/ajax'
 import type { FormError } from '../../lib/validate'
 import { hasError, validate } from '../../lib/validate'
 import { useCreateTagStore } from '../../stores/useCreateTagStore'
-import { useAjax } from '../../lib/ajax'
 
 type Props = {
   type: 'create' | 'edit'
@@ -16,15 +16,8 @@ export const TagForm: React.FC<Props> = (props) => {
   const { type } = props
   const { data, error, setData, setError } = useCreateTagStore()
   const [searchParams] = useSearchParams()
-  const nav = useNavigate()
-  const kind = searchParams.get('kind') || ''
-  const { post, get, patch } = useAjax({ showLoading: true, handleError: true })
-  const params = useParams()
-  const id = params.id
-  const { data: tag } = useSWR(id ? `/api/v1/tags/${id}` : null, async path => {
-    const response = await get<Resource<Tag>>(path)
-    return response.data.resource
-  })
+  const kind = searchParams.get('kind') ?? ''
+  const { post, patch, get } = useAjax({ showLoading: true, handleError: true })
   useEffect(() => {
     if (type !== 'create') { return }
     if (!kind) {
@@ -35,22 +28,28 @@ export const TagForm: React.FC<Props> = (props) => {
     }
     setData({ kind })
   }, [searchParams])
+  const params = useParams()
+  const id = params.id
+  const { data: tag } = useSWR(id ? `/api/v1/tags/${id}` : null, async (path) =>
+    (await get<Resource<Tag>>(path)).data.resource
+  )
   useEffect(() => {
     if (tag) {
       setData(tag)
     }
   }, [tag])
-  const handleError = (error: AxiosError<{ errors: FormError<typeof data> }>) => {
+
+  const onSubmitError = (error: AxiosError<{ errors: FormError<typeof data> }>) => {
     if (error.response) {
       const { status } = error.response
       if (status === 422) {
-        console.log(error.response)
         const { errors } = error.response.data
         setError(errors)
       }
     }
     throw error
   }
+  const nav = useNavigate()
   const onSubmit: FormEventHandler = async (e) => {
     e.preventDefault()
     const newError = validate(data, [
@@ -61,12 +60,11 @@ export const TagForm: React.FC<Props> = (props) => {
     ])
     setError(newError)
     if (!hasError(newError)) {
-      // 发起 AJAX 请求
       const promise = type === 'create'
         ? post<Resource<Tag>>('/api/v1/tags', data)
         : patch<Resource<Tag>>(`/api/v1/tags/${id}`, data)
-      const res = await promise.catch(handleError)
-      setData(res.data.resource)
+      const response = await promise.catch(onSubmitError)
+      setData(response.data.resource)
       nav(`/items/new?kind=${encodeURIComponent(kind)}`)
     }
   }

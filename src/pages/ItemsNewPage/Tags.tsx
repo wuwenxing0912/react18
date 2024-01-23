@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom'
-import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 import styled from 'styled-components'
 import { Icon } from '../../components/Icon'
-import { useTagsStore } from '../../stores/useTagsStore'
 import { useAjax } from '../../lib/ajax'
 
 type Props = {
@@ -82,7 +80,7 @@ export const Tags: React.FC<Props> = (props) => {
         </div>
         {error && <Div>数据加载失败，请刷新页面</Div>}
         {!hasMore
-          ? <Div>点击加号图标新增标签</Div>
+          ? page === 1 && last.resources.length === 0 ? <Div>点击加号图标新增标签</Div> : <Div>没有更多数据了</Div>
           : isLoading
             ? <Div>数据加载中...</Div>
             : <Div><button j-btn onClick={onLoadMore}>加载更多</button></Div>}

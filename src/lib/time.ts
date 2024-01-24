@@ -140,6 +140,9 @@ export class Time {
   set ms(v) {
     this.parts = { ms: v }
   }
+  get clone() {
+    return new Time(this.#date)
+  }
   get isoString() {
     // FIXME: 时区获取有问题，只能获取整数时区，如 +08:00；不能获取非整数时区，如 -07:30
     // 如果你有时间，就解决一下吧
@@ -148,8 +151,5 @@ export class Time {
     const sign = timezone > 0 ? '+' : '-'
     const pad = absolute.toString().padStart(2, '0')
     return `${this.format('yyyy-MM-ddTHH:mm:ss.fff') + sign + pad}:00`
-  }
-  get clone() {
-    return new Time(this.#date)
   }
 }

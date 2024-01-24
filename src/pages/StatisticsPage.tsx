@@ -13,32 +13,36 @@ import { useAjax } from '../lib/ajax'
 import type { Time } from '../lib/time'
 import { time } from '../lib/time'
 
+type Groups = { happen_at: string; amount: number }[]
+type Groups2 = { tag_id: number; tag: Tag; amount: number }[]
+const format = 'yyyy-MM-dd'
+type GetKeyParams = {
+  start: Time
+  end: Time
+  kind: Item['kind']
+  group_by: 'happen_at' | 'tag_id'
+}
+const getKey = ({ start, end, kind, group_by }: GetKeyParams) => {
+  return `/api/v1/items/summary?happened_after=${start.format('yyyy-MM-dd')}&happened_before=${end.format('yyyy-MM-dd')}&kind=${kind}&group_by=${group_by}`
+}
+const timeRangeMap: { [k in TimeRange]: number } = {
+  thisYear: 0,
+  custom: 0,
+  thisMonth: 0,
+  lastMonth: -1,
+  twoMonthsAgo: -2,
+  threeMonthsAgo: -3,
+}
 export const StatisticsPage: React.FC = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>('thisMonth')
-  // const pieItems = [
-  //   { tag: { name: '吃饭', sign: '😨' }, amount: 10000 },
-  //   { tag: { name: '打车', sign: '🥱' }, amount: 20000 },
-  //   { tag: { name: '买皮肤', sign: '💖' }, amount: 68800 },
-  // ].map(item => ({ x: item.tag.name, y: item.amount / 100 }))
-  // const items3 = [
-  //   { tag: { name: '吃饭', sign: '😨' }, amount: 10000 },
-  //   { tag: { name: '打车', sign: '🥱' }, amount: 20000 },
-  //   { tag: { name: '买皮肤', sign: '💖' }, amount: 68800 },
-  // ].map(item => ({ name: item.tag.name, value: item.amount, sign: item.tag.sign }))
-  const [kind, setKind] = useState('expenses')
-  const timeRanges: { key: TimeRange; text: string }[] = [
-    { key: 'thisMonth', text: '本月' },
-    { key: 'lastMonth', text: '上月' },
-  ]
-  const format = 'yyyy-MM-dd'
+  const [kind, setKind] = useState<Item['kind']>('expenses')
+  const { get } = useAjax({ showLoading: false, handleError: true })
+
   const generateStartEnd = () => {
-    if (timeRange === 'thisMonth') {
-      const start = time().firstDayOfMonth
-      const end = time().lastDayOfMonth.add(1, 'day')
-      return { start, end }
-    } else {
-      return { start: time(), end: time() }
-    }
+    const selected: Time = time().add(timeRangeMap[timeRange], 'month')
+    const start = selected.firstDayOfMonth
+    const end = start.lastDayOfMonth.add(1, 'day')
+    return { start, end }
   }
   const generateDefaultItems = (time: Time) => {
     return Array.from({ length: start.dayCountOfMonth }).map((_, i) => {
@@ -48,25 +52,20 @@ export const StatisticsPage: React.FC = () => {
   }
   const { start, end } = generateStartEnd()
   const defaultItems = generateDefaultItems(start)
-  const { get } = useAjax({ showLoading: false, handleError: true })
-  const { data: items } = useSWR(`/api/v1/items/summary?happened_after=${start}&happened_before=${end}&kind=${kind}&group_by=happen_at`,
-    async (path) => {
-      const res = await get<{ groups: { happen_at: string; amount: number }[]; total: number }>(path)
-      return res.data.groups.map(({ happen_at, amount }) => ({ x: happen_at, y: amount / 100 }))
-    })
+  const { data: items } = useSWR(getKey({ start, end, kind, group_by: 'happen_at' }),
+    async (path) =>
+      (await get<{ groups: Groups; total: number }>(path)).data.groups
+        .map(({ happen_at, amount }) => ({ x: happen_at, y: (amount / 100).toFixed(2) }))
+  )
   const normalizedItems = defaultItems?.map((defaultItem, index) =>
     items?.find((item) => item.x === defaultItem.x) || defaultItem
   )
-  const { data: middleItems } = useSWR(`/api/v1/items/summary?happened_after=${start}&happened_before=${end}&kind=${kind}&group_by=tag_id`,
-    async (path) => {
-      // ].map(item => ({ x: item.tag.name, y: item.amount / 100 }))
-      const res = await get<{ groups: { tag_id: number; tag: Tag; amount: number }[]; total: number }>(path)
-      return res.data.groups
-    })
-  const pieItems = middleItems?.map(({ tag, amount }) => ({ x: tag.name, y: amount / 100 }))
-  // .map(item => ({ name: item.tag.name, value: item.amount, sign: item.tag.sign }))
-  const rankItems = middleItems?.map(({ tag, amount }) => ({ name: tag.name, value: amount / 100, sign: tag.sign }))
-  console.log(rankItems)
+  const { data: items2 } = useSWR(getKey({ start, end, kind, group_by: 'tag_id' }),
+    async (path) =>
+      (await get<{ groups: Groups2; total: number }>(path)).data.groups
+        .map(({ tag_id, tag, amount }) =>
+          ({ name: tag.name, value: (amount / 100).toFixed(2), sign: tag.sign }))
+  )
   return (
     <div>
       <Gradient>
@@ -74,7 +73,13 @@ export const StatisticsPage: React.FC = () => {
           <Icon name="back" />
         } />
       </Gradient>
-      <TimeRangePicker selected={timeRange} onSelect={setTimeRange} timeRanges={timeRanges} />
+      <TimeRangePicker selected={timeRange} onSelect={setTimeRange}
+        timeRanges={[
+          { key: 'thisMonth', text: '本月' },
+          { key: 'lastMonth', text: '上月' },
+          { key: 'twoMonthsAgo', text: '两个月前' },
+          { key: 'threeMonthsAgo', text: '三个月前' },
+        ]} />
       <div flex p-16px items-center gap-x-16px>
         <span grow-0 shrink-0>类型</span>
         <div grow-1 shrink-1>
@@ -85,8 +90,8 @@ export const StatisticsPage: React.FC = () => {
         </div>
       </div>
       <LineChart className="h-120px" items={normalizedItems} />
-      <PieChart className="h-260px m-t-16px" items={pieItems} />
-      <RankChart className="m-t-8px" items={rankItems} />
+      <PieChart className="h-260px m-t-16px" items={items2} />
+      <RankChart className="m-t-8px" items={items2} />
     </div>
   )
 }

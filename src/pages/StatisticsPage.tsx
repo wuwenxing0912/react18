@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useSWR from 'swr'
 import { Gradient } from '../components/Gradient'
 import { Icon } from '../components/Icon'
@@ -10,42 +10,11 @@ import { PieChart } from '../components/PieChart'
 import { RankChart } from '../components/RankChart'
 import { Input } from '../components/Input'
 import { useAjax } from '../lib/ajax'
+import type { Time } from '../lib/time'
 import { time } from '../lib/time'
 
 export const StatisticsPage: React.FC = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>('thisMonth')
-  // const items = [
-  //   { date: '2000-01-01', value: 15000 },
-  //   { date: '2000-01-02', value: 25000 },
-  //   { date: '2000-01-03', value: 25000 },
-  //   { date: '2000-01-04', value: 35000 },
-  //   { date: '2000-01-05', value: 35000 },
-  //   { date: '2000-01-06', value: 45000 },
-  //   { date: '2000-01-07', value: 45000 },
-  //   { date: '2000-01-08', value: 55000 },
-  //   { date: '2000-01-09', value: 55000 },
-  //   { date: '2000-01-10', value: 65000 },
-  //   { date: '2000-01-11', value: 65000 },
-  //   { date: '2000-01-12', value: 75000 },
-  //   { date: '2000-01-13', value: 75000 },
-  //   { date: '2000-01-14', value: 85000 },
-  //   { date: '2000-01-15', value: 85000 },
-  //   { date: '2000-01-16', value: 95000 },
-  //   { date: '2000-01-17', value: 95000 },
-  //   { date: '2000-01-18', value: 105000 },
-  //   { date: '2000-01-19', value: 105000 },
-  //   { date: '2000-01-20', value: 115000 },
-  //   { date: '2000-01-21', value: 115000 },
-  //   { date: '2000-01-22', value: 125000 },
-  //   { date: '2000-01-23', value: 125000 },
-  //   { date: '2000-01-24', value: 135000 },
-  //   { date: '2000-01-25', value: 135000 },
-  //   { date: '2000-01-26', value: 145000 },
-  //   { date: '2000-01-27', value: 145000 },
-  //   { date: '2000-01-28', value: 155000 },
-  //   { date: '2000-01-29', value: 155000 },
-  //   { date: '2000-01-31', value: 10000 },
-  // ].map(item => ({ x: item.date, y: item.value / 100 }))
   const items2 = [
     { tag: { name: '吃饭', sign: '😨' }, amount: 10000 },
     { tag: { name: '打车', sign: '🥱' }, amount: 20000 },
@@ -62,36 +31,32 @@ export const StatisticsPage: React.FC = () => {
     { key: 'lastMonth', text: '上月' },
   ]
   const format = 'yyyy-MM-dd'
-  const generateStartEndAndDefaultItems = () => {
-    const defaultItems: { x: string; y: number }[] = []
+  const generateStartEnd = () => {
     if (timeRange === 'thisMonth') {
-      const startTime = time().firstDayOfMonth
-      const start = startTime.format(format)
-      const endTime = time().lastDayOfMonth.add(1, 'day')
-      const end = endTime.format(format)
-      for (let i = 0; i < startTime.dayCountOfMonth; i++) {
-        const x = startTime.clone.add(i, 'day').format(format)
-        defaultItems.push({ x, y: 0 })
-      }
-      return { start, end, defaultItems }
+      const start = time().firstDayOfMonth
+      const end = time().lastDayOfMonth.add(1, 'day')
+      return { start, end }
     } else {
-      return { start: '', end: '', defaultItems }
+      return { start: time(), end: time() }
     }
   }
-  const { start, end, defaultItems } = generateStartEndAndDefaultItems()
+  const generateDefaultItems = (time: Time) => {
+    return Array.from({ length: start.dayCountOfMonth }).map((_, i) => {
+      const x = start.clone.add(i, 'day').format(format)
+      return { x, y: 0 }
+    })
+  }
+  const { start, end } = generateStartEnd()
+  const defaultItems = generateDefaultItems(start)
   const { get } = useAjax({ showLoading: false, handleError: true })
   const { data: items } = useSWR(`/api/v1/items/summary?happened_after=${start}&happened_before=${end}&kind=${kind}&group_by=happen_at`,
     async (path) => {
       const res = await get<{ groups: { happen_at: string; amount: number }[]; total: number }>(path)
       return res.data.groups.map(({ happen_at, amount }) => ({ x: happen_at, y: amount / 100 }))
     })
-  useEffect(() => {
-    console.log(items)
-  }, [items])
   const normalizedItems = defaultItems?.map((defaultItem, index) =>
     items?.find((item) => item.x === defaultItem.x) || defaultItem
   )
-  console.log(normalizedItems)
   return (
     <div>
       <Gradient>

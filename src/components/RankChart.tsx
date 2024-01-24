@@ -1,5 +1,3 @@
-import { Money } from './Money'
-
 type Props = {
   className?: string
   items?: { name: string; value: number; sign: string }[]
@@ -22,7 +20,7 @@ export const RankChart: React.FC<Props> = (props) => {
             {item.name} - {`${(item.value / total * 100).toFixed(0)}%`}
           </div>
           <div row-start-1 col-start-3 row-end-2 col-end-4 text-right self-end>
-            <Money value={item.value} />
+            {item.value} 元
           </div>
           <div row-start-2 col-start-2 row-end-3 col-end-4 h-8px self-start
             rounded-4px overflow-hidden bg="#CCC" relative>

@@ -20,11 +20,11 @@ export const StatisticsPage: React.FC = () => {
   //   { tag: { name: '打车', sign: '🥱' }, amount: 20000 },
   //   { tag: { name: '买皮肤', sign: '💖' }, amount: 68800 },
   // ].map(item => ({ x: item.tag.name, y: item.amount / 100 }))
-  const items3 = [
-    { tag: { name: '吃饭', sign: '😨' }, amount: 10000 },
-    { tag: { name: '打车', sign: '🥱' }, amount: 20000 },
-    { tag: { name: '买皮肤', sign: '💖' }, amount: 68800 },
-  ].map(item => ({ name: item.tag.name, value: item.amount, sign: item.tag.sign }))
+  // const items3 = [
+  //   { tag: { name: '吃饭', sign: '😨' }, amount: 10000 },
+  //   { tag: { name: '打车', sign: '🥱' }, amount: 20000 },
+  //   { tag: { name: '买皮肤', sign: '💖' }, amount: 68800 },
+  // ].map(item => ({ name: item.tag.name, value: item.amount, sign: item.tag.sign }))
   const [kind, setKind] = useState('expenses')
   const timeRanges: { key: TimeRange; text: string }[] = [
     { key: 'thisMonth', text: '本月' },
@@ -57,13 +57,16 @@ export const StatisticsPage: React.FC = () => {
   const normalizedItems = defaultItems?.map((defaultItem, index) =>
     items?.find((item) => item.x === defaultItem.x) || defaultItem
   )
-  const { data: pieItems } = useSWR(`/api/v1/items/summary?happened_after=${start}&happened_before=${end}&kind=${kind}&group_by=tag_id`,
+  const { data: middleItems } = useSWR(`/api/v1/items/summary?happened_after=${start}&happened_before=${end}&kind=${kind}&group_by=tag_id`,
     async (path) => {
       // ].map(item => ({ x: item.tag.name, y: item.amount / 100 }))
       const res = await get<{ groups: { tag_id: number; tag: Tag; amount: number }[]; total: number }>(path)
-      return res.data.groups.map(({ tag, amount }) => ({ x: tag.name, y: amount / 100 }))
+      return res.data.groups
     })
-  console.log(pieItems)
+  const pieItems = middleItems?.map(({ tag, amount }) => ({ x: tag.name, y: amount / 100 }))
+  // .map(item => ({ name: item.tag.name, value: item.amount, sign: item.tag.sign }))
+  const rankItems = middleItems?.map(({ tag, amount }) => ({ name: tag.name, value: amount / 100, sign: tag.sign }))
+  console.log(rankItems)
   return (
     <div>
       <Gradient>
@@ -72,7 +75,6 @@ export const StatisticsPage: React.FC = () => {
         } />
       </Gradient>
       <TimeRangePicker selected={timeRange} onSelect={setTimeRange} timeRanges={timeRanges} />
-      <div>{timeRange}</div>
       <div flex p-16px items-center gap-x-16px>
         <span grow-0 shrink-0>类型</span>
         <div grow-1 shrink-1>
@@ -84,7 +86,7 @@ export const StatisticsPage: React.FC = () => {
       </div>
       <LineChart className="h-120px" items={normalizedItems} />
       <PieChart className="h-260px m-t-16px" items={pieItems} />
-      <RankChart className="m-t-8px" items={items3} />
+      <RankChart className="m-t-8px" items={rankItems} />
     </div>
   )
 }

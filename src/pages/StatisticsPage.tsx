@@ -15,11 +15,11 @@ import { time } from '../lib/time'
 
 export const StatisticsPage: React.FC = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>('thisMonth')
-  const items2 = [
-    { tag: { name: '吃饭', sign: '😨' }, amount: 10000 },
-    { tag: { name: '打车', sign: '🥱' }, amount: 20000 },
-    { tag: { name: '买皮肤', sign: '💖' }, amount: 68800 },
-  ].map(item => ({ x: item.tag.name, y: item.amount / 100 }))
+  // const pieItems = [
+  //   { tag: { name: '吃饭', sign: '😨' }, amount: 10000 },
+  //   { tag: { name: '打车', sign: '🥱' }, amount: 20000 },
+  //   { tag: { name: '买皮肤', sign: '💖' }, amount: 68800 },
+  // ].map(item => ({ x: item.tag.name, y: item.amount / 100 }))
   const items3 = [
     { tag: { name: '吃饭', sign: '😨' }, amount: 10000 },
     { tag: { name: '打车', sign: '🥱' }, amount: 20000 },
@@ -57,6 +57,13 @@ export const StatisticsPage: React.FC = () => {
   const normalizedItems = defaultItems?.map((defaultItem, index) =>
     items?.find((item) => item.x === defaultItem.x) || defaultItem
   )
+  const { data: pieItems } = useSWR(`/api/v1/items/summary?happened_after=${start}&happened_before=${end}&kind=${kind}&group_by=tag_id`,
+    async (path) => {
+      // ].map(item => ({ x: item.tag.name, y: item.amount / 100 }))
+      const res = await get<{ groups: { tag_id: number; tag: Tag; amount: number }[]; total: number }>(path)
+      return res.data.groups.map(({ tag, amount }) => ({ x: tag.name, y: amount / 100 }))
+    })
+  console.log(pieItems)
   return (
     <div>
       <Gradient>
@@ -76,7 +83,7 @@ export const StatisticsPage: React.FC = () => {
         </div>
       </div>
       <LineChart className="h-120px" items={normalizedItems} />
-      <PieChart className="h-260px m-t-16px" items={items2} />
+      <PieChart className="h-260px m-t-16px" items={pieItems} />
       <RankChart className="m-t-8px" items={items3} />
     </div>
   )

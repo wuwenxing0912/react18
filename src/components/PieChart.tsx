@@ -10,10 +10,11 @@ export const PieChart: React.FC<Props> = (props) => {
   const { className, items } = props
   const div = useRef<HTMLDivElement>(null)
   const initialized = useRef(false)
+  const chartRef = useRef<echarts.ECharts>()
   useEffect(() => {
     if (!div.current) { return }
     if (initialized.current) { return }
-    const myChart = echarts.init(div.current)
+    chartRef.current = echarts.init(div.current)
     initialized.current = true
     const option: EChartsOption = {
       tooltip: { trigger: 'item' },
@@ -25,8 +26,16 @@ export const PieChart: React.FC<Props> = (props) => {
       }]
     }
 
-    myChart.setOption(option)
+    chartRef.current.setOption(option)
   }, [])
+  useEffect(() => {
+    const option: EChartsOption = {
+      series: [{
+        data: items?.map(item => ({ value: item.y, name: item.x })),
+      }]
+    }
+    chartRef.current?.setOption(option)
+  }, [items])
   return (
     <div ref={div} className={className}></div>
   )

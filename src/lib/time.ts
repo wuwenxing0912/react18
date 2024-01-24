@@ -27,6 +27,9 @@ export class Time {
   get firstDayOfMonth() {
     return new Time(new Date(this.year, this.month - 1, 1))
   }
+  get dayCountOfMonth() {
+    return this.lastDayOfMonth.day
+  }
   /**
    * 格式化输出
    * @param pattern 目前只支持 yyyy MM dd HH mm ss fff，默认值为 'yyyy-MM-dd'
@@ -145,5 +148,8 @@ export class Time {
     const sign = timezone > 0 ? '+' : '-'
     const pad = absolute.toString().padStart(2, '0')
     return `${this.format('yyyy-MM-ddTHH:mm:ss.fff') + sign + pad}:00`
+  }
+  get clone() {
+    return new Time(this.#date)
   }
 }

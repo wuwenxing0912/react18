@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-import * as echarts from 'echarts'
+import { useState } from 'react'
 import { Gradient } from '../components/Gradient'
 import { Icon } from '../components/Icon'
 import type { TimeRange } from '../components/TimeRangePicker'
@@ -55,6 +54,10 @@ export const StatisticsPage: React.FC = () => {
     { tag: { name: '买皮肤', sign: '💖' }, amount: 68800 },
   ].map(item => ({ name: item.tag.name, value: item.amount, sign: item.tag.sign }))
   const [x, setX] = useState('expenses')
+  const timeRanges: { key: TimeRange; text: string }[] = [
+    { key: 'thisMonth', text: '本月' },
+    { key: 'lastMonth', text: '上月' },
+  ]
   return (
     <div>
       <Gradient>
@@ -62,14 +65,15 @@ export const StatisticsPage: React.FC = () => {
           <Icon name="back" />
         } />
       </Gradient>
-      <TimeRangePicker selected={timeRange} onSelect={setTimeRange} />
+      <TimeRangePicker selected={timeRange} onSelect={setTimeRange} timeRanges={timeRanges} />
+      <div>{timeRange}</div>
       <div flex p-16px items-center gap-x-16px>
         <span grow-0 shrink-0>类型</span>
         <div grow-1 shrink-1>
           <Input type="select" options={[
             { text: '支出', value: 'expenses' },
             { text: '收入', value: 'income' },
-          ]} value={x} onChange={value => setX(value)} disableError/>
+          ]} value={x} onChange={value => setX(value)} disableError />
         </div>
       </div>
       <LineChart className="h-120px" items={items} />

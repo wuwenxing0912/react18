@@ -1,4 +1,4 @@
-export const comfirmable = (tip: string, fn: () => void) => () => {
-  const result = window.confirm(tip)
+export const comfirmable = (title: string, fn: () => void) => () => {
+  const result = window.confirm(title)
   if (result) { fn() }
 }

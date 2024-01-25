@@ -11,8 +11,8 @@ export default defineConfig((env) => {
     server: {
       proxy: {
         '/api/': {
-          target: 'https://mangosteen2.hunger-valley.com/',
-          changeOrigin: true,
+          target: 'http://121.196.236.94:8080/',
+          changeOrigin: false,
         },
       }
     },
@@ -23,7 +23,8 @@ export default defineConfig((env) => {
       Unocss(),
       react(),
       viteMockServe(),
-      svgsprites({ noOptimizeList: ['logo', 'chart', 'category', 'export', 'noty', 'calendar', 'pig'] })
+      svgsprites({ noOptimizeList: ['pig', 'logo', 'chart', 'category', 'export', 'noty', 'calendar'] })
     ]
   }
 })
+

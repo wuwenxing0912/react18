@@ -60,7 +60,9 @@ export const StatisticsPage: React.FC = () => {
   return (
     <div>
       <Gradient>
-        <TopNav title="统计图表" icon={<BackIcon />} />
+        <TopNav title="统计图表" icon={
+          <BackIcon />
+        } />
       </Gradient>
       <TimeRangePicker selected={timeRange} onSelect={setTimeRange}
         timeRanges={[

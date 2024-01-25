@@ -1,5 +1,4 @@
 import { Outlet, createBrowserRouter } from 'react-router-dom'
-import { preload } from 'swr'
 import type { AxiosError } from 'axios'
 import { Root } from '../components/Root'
 import { WelcomeLayout } from '../layouts/WelcomeLayout'
@@ -40,8 +39,12 @@ export const router = createBrowserRouter([
     path: '/',
     element: <Outlet />,
     errorElement: <ErrorPage />,
-    loader: async () => await ajax.get<Resource<User>>('/api/v1/me')
-      .catch(e => { if (e.response?.status === 401) { throw new ErrorUnauthorized } }),
+    loader: async () => {
+      return await ajax.get<Resource<User>>('/api/v1/me').catch(e => {
+        if (e.response?.status === 401) { throw new ErrorUnauthorized }
+        throw e
+      })
+    },
     children: [
       {
         path: '/items',
@@ -52,26 +55,23 @@ export const router = createBrowserRouter([
             if (error.response?.status === 401) { throw new ErrorUnauthorized() }
             throw error
           }
-          return preload('/api/v1/items?page=1', async (path) => {
-            const response = await ajax.get<Resources<Item>>(path).catch(onError)
-            if (response.data.resources.length > 0) {
-              return response.data
-            } else {
-              throw new ErrorEmptyData()
-            }
-          })
+          const response = await ajax.get<Resources<Item>>('/api/v1/items?page=1').catch(onError)
+          if (response.data.resources.length > 0) {
+            return response.data
+          } else {
+            throw new ErrorEmptyData()
+          }
         }
       },
       {
         path: '/items/new',
         element: <ItemsNewPage />,
       },
-      { path: '/tags', element: <div>标签</div> },
       { path: '/tags/new', element: <TagsNewPage /> },
       { path: '/tags/:id', element: <TagsEditPage /> },
       { path: '/statistics', element: <StatisticsPage /> },
-      { path: '/export', element: <ComingSoonPage/> },
-      { path: '/noty', element: <ComingSoonPage/> },
+      { path: '/export', element: <ComingSoonPage /> },
+      { path: '/noty', element: <ComingSoonPage /> },
     ]
   },
 ])

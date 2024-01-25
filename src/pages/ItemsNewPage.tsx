@@ -5,6 +5,7 @@ import { Gradient } from '../components/Gradient'
 import { Tabs } from '../components/Tabs'
 import { TopNav } from '../components/TopNav'
 import { useAjax } from '../lib/ajax'
+import { time } from '../lib/time'
 import { hasError, validate } from '../lib/validate'
 import { useCreateItemStore } from '../stores/useCreateItemStore'
 import s from './ItemsNewPage.module.scss'
@@ -24,8 +25,8 @@ export const ItemsNewPage: React.FC = () => {
         <Tags kind="income" value={data.tag_ids} onChange={(ids) => setData({ tag_ids: ids })} />
     }
   ] // React DOM diff 的优化
-  const nav = useNavigate()
   const { post } = useAjax({ showLoading: true, handleError: true })
+  const nav = useNavigate()
   const onSubmit = async () => {
     const error = validate(data, [
       { key: 'kind', type: 'required', message: '请选择类型：收入或支出' },
@@ -40,7 +41,7 @@ export const ItemsNewPage: React.FC = () => {
       window.alert(message)
     } else {
       await post<Resource<Item>>('/api/v1/items', data)
-      setData({ amount: 0 })
+      setData({ amount: 0, happen_at: time().isoString })
       nav('/items')
     }
   }

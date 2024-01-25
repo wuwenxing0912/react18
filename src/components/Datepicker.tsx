@@ -31,7 +31,7 @@ export const Datepicker: React.FC<Props> = (props) => {
         <span>时间选择</span>
         <span onClick={() => onConfirm?.(valueTime.current.date)}>确定</span>
       </div>
-      <div flex text-center children-p-16px children-grow-1>
+      <div flex children-grow-1 text-center children-p-16px>
         <span>年</span>
         <span>月</span>
         <span>日</span>
@@ -40,15 +40,15 @@ export const Datepicker: React.FC<Props> = (props) => {
       </div>
       <div flex>
         <Column className="grow-1" items={yearList} value={valueTime.current.year}
-          onChange={year => { valueTime.current.year = year; update({}) }} />
+          onChange={v => { valueTime.current.year = v; update({}) }} />
         <Column className="grow-1" items={monthList} value={valueTime.current.month}
-          onChange={month => { valueTime.current.month = month; update({}) }} />
+          onChange={v => { valueTime.current.month = v; update({}) }} />
         <Column className="grow-1" items={dayList} value={valueTime.current.day}
-          onChange={day => { valueTime.current.day = day; update({}) }} />
-        <Column className="grow-1" items={hoursList} value={valueTime.current.year}
-          onChange={hours => { valueTime.current.hours = hours; update({}) }} />
-        <Column className="grow-1" items={minutesList} value={valueTime.current.month}
-          onChange={minutes => { valueTime.current.minutes = minutes; update({}) }} />
+          onChange={v => { valueTime.current.day = v; update({}) }} />
+        <Column className="grow-1" items={hoursList} value={valueTime.current.hours}
+          onChange={v => { valueTime.current.hours = v; update({}) }} />
+        <Column className="grow-1" items={minutesList} value={valueTime.current.minutes}
+          onChange={v => { valueTime.current.minutes = v; update({}) }} />
       </div>
     </div>
   )

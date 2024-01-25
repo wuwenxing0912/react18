@@ -1,5 +1,5 @@
 var isDev: boolean
-type JSONValue = string | number | boolean | null | { [k: string]: JSONValue } | JSONValue[]
+type JSONValue = string | number | boolean | null | { [k: string | number]: JSONValue } | JSONValue[]
 type Resource<T> = {
   resource: T
 }
@@ -31,7 +31,6 @@ type Item = {
   kind: 'expenses' | 'income'
   deleted_at?: string
 }
-
 type Tag = {
   id: number
   kind: Item['kind']

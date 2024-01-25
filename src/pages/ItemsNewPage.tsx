@@ -40,6 +40,7 @@ export const ItemsNewPage: React.FC = () => {
       window.alert(message)
     } else {
       await post<Resource<Item>>('/api/v1/items', data)
+      setData({ amount: 0 })
       nav('/items')
     }
   }

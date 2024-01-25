@@ -22,12 +22,21 @@ export const Datepicker: React.FC<Props> = (props) => {
     .map((_, index) => startTime.year + index)
   const monthList = Array.from({ length: 12 }).map((_, index) => index + 1)
   const dayList = Array.from({ length: valueTime.current.lastDayOfMonth.day }).map((_, index) => index + 1)
+  const hoursList = Array.from({ length: 24 }).map((_, index) => index)
+  const minutesList = Array.from({ length: 60 }).map((_, index) => index)
   return (
     <div>
       <div flex justify-between p-8px border-b-1 b-b-solid b="#f3f3f3" children-p-8px>
         <span onClick={onCancel}>取消</span>
         <span>时间选择</span>
         <span onClick={() => onConfirm?.(valueTime.current.date)}>确定</span>
+      </div>
+      <div flex text-center children-p-16px children-grow-1>
+        <span>年</span>
+        <span>月</span>
+        <span>日</span>
+        <span>时</span>
+        <span>分</span>
       </div>
       <div flex>
         <Column className="grow-1" items={yearList} value={valueTime.current.year}
@@ -36,6 +45,10 @@ export const Datepicker: React.FC<Props> = (props) => {
           onChange={month => { valueTime.current.month = month; update({}) }} />
         <Column className="grow-1" items={dayList} value={valueTime.current.day}
           onChange={day => { valueTime.current.day = day; update({}) }} />
+        <Column className="grow-1" items={hoursList} value={valueTime.current.year}
+          onChange={hours => { valueTime.current.hours = hours; update({}) }} />
+        <Column className="grow-1" items={minutesList} value={valueTime.current.month}
+          onChange={minutes => { valueTime.current.minutes = minutes; update({}) }} />
       </div>
     </div>
   )

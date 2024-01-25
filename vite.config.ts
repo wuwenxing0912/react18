@@ -5,14 +5,25 @@ import { viteMockServe } from 'vite-plugin-mock'
 import { svgsprites } from './vite_plugins/svgsprites'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => ({
-  define: {
-    isDev: command === 'serve'
-  },
-  plugins: [
-    Unocss(),
-    react(),
-    viteMockServe(),
-    svgsprites({ noOptimizeList: ['logo', 'chart', 'category', 'export', 'noty', 'calendar'] })
-  ]
-}))
+export default defineConfig((env) => {
+  const { command } = env
+  return {
+    server: {
+      proxy: {
+        '/api/': {
+          target: 'https://mangosteen2.hunger-valley.com/',
+          changeOrigin: false,
+        },
+      }
+    },
+    define: {
+      isDev: command === 'serve'
+    },
+    plugins: [
+      Unocss(),
+      react(),
+      viteMockServe(),
+      svgsprites({ noOptimizeList: ['logo', 'chart', 'category', 'export', 'noty', 'calendar'] })
+    ]
+  }
+})

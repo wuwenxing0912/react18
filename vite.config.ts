@@ -12,7 +12,7 @@ export default defineConfig((env) => {
       proxy: {
         '/api/': {
           target: 'https://mangosteen2.hunger-valley.com/',
-          changeOrigin: false,
+          changeOrigin: true,
         },
       }
     },

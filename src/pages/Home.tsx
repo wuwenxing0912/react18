@@ -25,7 +25,8 @@ export const Home: React.FC<Props> = (props) => {
   const isLoadingItems = meData && !itemsData && !itemsError
 
   if (isLoadingMe || isLoadingItems) {
-    return <Loading className="h-screen" />
+    return <div></div>
+    // return <Loading className="h-screen" />
   }
 
   if (itemsData?.resources[0]) {
